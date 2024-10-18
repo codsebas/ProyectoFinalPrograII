@@ -10,11 +10,11 @@ import javax.swing.JOptionPane;
 public class Conector {
 
     // DEFINIR LAS PROPIEDADES DE LA CONEXIÓN
-    private static final String CLASE = "com.mysql.jdbc.Driver";
-    private final String HOST = "localhost";
-    private final String USUARIO = "root";
-    private final String CLAVE = "TitiGordo@00";
-    private final String BASEDATOS = "db_citas";
+    private static final String CLASE = "com.mysql.cj.jdbc.Driver";
+    private final String HOST = "sql.freedb.tech";
+    private final String USUARIO = "freedb_gerson";
+    private final String CLAVE = "H6dCy!P5Pwt3BV3";
+    private final String BASEDATOS = "freedb_ProyectoPrograPrueba";
     private final String URL;
 
     private Connection link;
@@ -22,17 +22,18 @@ public class Conector {
 
     
     public Conector() {
-        this.URL = "jdbc:mysql://localhost:3306/db_citas?serverTimezone=UTC";
+        this.URL = "jdbc:mysql://sql.freedb.tech/freedb_ProyectoPrograPrueba?serverTimezone=UTC";
     }
 
-    public void conectar() {
+    public Connection conectar() {
         try {
             Class.forName(CLASE).getDeclaredConstructor().newInstance();
             this.link = DriverManager.getConnection(this.URL, this.USUARIO, this.CLAVE);
-            System.out.println("Conexion");
+            System.out.println("Conexion establecida correctamente");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | SQLException ex) {
             System.out.println(ex.getMessage());
         }
+        return this.link;
     }
 
     public void desconectar() {

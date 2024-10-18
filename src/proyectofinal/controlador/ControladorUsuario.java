@@ -7,6 +7,7 @@ package proyectofinal.controlador;
 
 import java.util.ArrayList;
 import java.util.List;
+import proyectofinal.dao.UsuarioDao;
 import proyectofinal.modelos.ModeloUsuario;
 
 /**
@@ -16,35 +17,38 @@ import proyectofinal.modelos.ModeloUsuario;
 
 
 public class ControladorUsuario {
-    private List<ModeloUsuario> usuarios;
-    
-    
-    public ControladorUsuario(){
-        
-        usuarios = new ArrayList<>();
-        
-        ModeloUsuario admin = new ModeloUsuario();
-        admin.setUsuario("admin");
-        admin.setPassword("123");
-        admin.setRol("admin");
-        usuarios.add(admin);
-        
+   private UsuarioDao usuarioDAO; 
+
+    public ControladorUsuario() {
+        this.usuarioDAO = new UsuarioDao();
+        verificarAdmin(); 
     }
 
-    // Método para validar el login
-    public ModeloUsuario validarUsuario(String usuario, String password) {
-        for (ModeloUsuario usuarioExistente : usuarios) {
-            if (usuarioExistente.getUsuario().equals(usuario) && usuarioExistente.getPassword().equals(password)) {
-                return usuarioExistente; // Usuario encontrado
-            }
+    private void verificarAdmin() {
+   
+        if (usuarioDAO.obtenerUsuarioPorRol("admin") == null) {
+            // Si no existe, creamos un nuevo admin
+            ModeloUsuario nuevoAdmin = new ModeloUsuario();
+            nuevoAdmin.setUsuario("admin");
+            nuevoAdmin.setPassword("123"); 
+            nuevoAdmin.setRol("admin");
+            usuarioDAO.registrarUsuario(nuevoAdmin); 
+            
         }
-        return null; // Usuario no encontrado
     }
-        
-        
-        
-       
-        
-    }
-    
 
+    public void registrarUsuario(String usuario, String password, String rol) {
+        if (usuario.isEmpty() || password.isEmpty()) {
+            throw new IllegalArgumentException("Los campos no pueden estar vacíos");
+        }
+        ModeloUsuario nuevoUsuario = new ModeloUsuario();
+        nuevoUsuario.setUsuario(usuario);
+        nuevoUsuario.setPassword(password);
+        nuevoUsuario.setRol(rol);
+        usuarioDAO.registrarUsuario(nuevoUsuario);
+    }
+
+    public ModeloUsuario validarUsuario(String usuario, String password) {
+        return usuarioDAO.validarUsuario(usuario, password);
+    }
+}
