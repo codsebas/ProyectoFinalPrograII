@@ -17,6 +17,12 @@ public class VistaVentas extends javax.swing.JFrame {
      */
     public VistaVentas() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        this.setTitle("Ventas");
+        ModeloVenta modeloVenta = new ModeloVenta(this);
+        ModeloDetalleVenta modeloDetVenta = new ModeloDetalleVenta(this);
+        ControladorVentas controlador = new ControladorVentas(modeloVenta, modeloDetVenta);
+        setControladorVentas(controlador);
     }
 
     /**
@@ -52,9 +58,9 @@ public class VistaVentas extends javax.swing.JFrame {
         tblMostrarProductos = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        lstClientes = new javax.swing.JComboBox<>();
+        cmbClientes = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        lstMetodoPago = new javax.swing.JComboBox<>();
+        cmbMetodoPago = new javax.swing.JComboBox<>();
         txtNombreCliente = new javax.swing.JLabel();
         btnGuardar = new javax.swing.JButton();
         btnRegresar = new javax.swing.JButton();
@@ -238,11 +244,16 @@ public class VistaVentas extends javax.swing.JFrame {
 
         jLabel1.setText("Cliente:");
 
-        lstClientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbClientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbClientesActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Método de pago");
 
-        lstMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         txtNombreCliente.setText("Nombre");
 
@@ -268,14 +279,14 @@ public class VistaVentas extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(lstClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmbClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(124, 124, 124))
+                        .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lstMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -285,12 +296,12 @@ public class VistaVentas extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(lstClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNombreCliente))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(lstMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
@@ -339,6 +350,10 @@ public class VistaVentas extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cmbClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbClientesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbClientesActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -373,6 +388,18 @@ public class VistaVentas extends javax.swing.JFrame {
             }
         });
     }
+    
+    private void setControladorVentas(ControladorVentas controlador){
+        btnAgregarCliente.addActionListener(controlador);
+        btnBuscar.addActionListener(controlador);
+        btnCancelar.addActionListener(controlador);
+        btnGuardar.addActionListener(controlador);
+        btnRegresar.addActionListener(controlador);
+        btnVaciarLista.addActionListener(controlador);
+        tblListaProductos.addMouseListener(controlador);
+        tblMostrarProductos.addMouseListener(controlador);
+        this.addWindowListener(controlador);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnAgregarCliente;
@@ -381,6 +408,8 @@ public class VistaVentas extends javax.swing.JFrame {
     public javax.swing.JButton btnGuardar;
     public javax.swing.JButton btnRegresar;
     public javax.swing.JButton btnVaciarLista;
+    public javax.swing.JComboBox<String> cmbClientes;
+    public javax.swing.JComboBox<String> cmbMetodoPago;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -396,8 +425,6 @@ public class VistaVentas extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    public javax.swing.JComboBox<String> lstClientes;
-    public javax.swing.JComboBox<String> lstMetodoPago;
     public javax.swing.JTable tblListaProductos;
     public javax.swing.JTable tblMostrarProductos;
     public javax.swing.JTextField txtBuscarProducto;

@@ -15,7 +15,7 @@ public class ModeloVenta {
     private String usuario;
     private String nitCliente;
     private double totalSinImpuestos;
-    private double totalImpuestps;
+    private double totalImpuestos;
     private double cargoTarjeta;
     private double totalVenta;
     private String metodoPago;
@@ -32,7 +32,7 @@ public class ModeloVenta {
         this.usuario = usuario;
         this.nitCliente = nitCliente;
         this.totalSinImpuestos = totalSinImpuestos;
-        this.totalImpuestps = totalImpuestps;
+        this.totalImpuestos = totalImpuestps;
         this.cargoTarjeta = cargoTarjeta;
         this.totalVenta = totalVenta;
         this.metodoPago = metodoPago;
@@ -62,12 +62,12 @@ public class ModeloVenta {
         this.totalSinImpuestos = totalSinImpuestos;
     }
 
-    public double getTotalImpuestps() {
-        return totalImpuestps;
+    public double getTotalImpuestos() {
+        return totalImpuestos;
     }
 
     public void setTotalImpuestps(double totalImpuestps) {
-        this.totalImpuestps = totalImpuestps;
+        this.totalImpuestos = totalImpuestps;
     }
 
     public double getCargoTarjeta() {

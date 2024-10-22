@@ -4,6 +4,7 @@
  */
 package proyectofinal.interfaces;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import proyectofinal.modelos.ModeloVenta;
 
@@ -18,4 +19,5 @@ public interface IVentas {
     public DefaultTableModel modeloVenta();
     public DefaultTableModel modeloVenta(int factura);
     public ModeloVenta mostrarVenta(int factura);
+    public DefaultComboBoxModel mostrarCliente();
 }
