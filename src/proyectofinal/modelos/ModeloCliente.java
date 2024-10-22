@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package proyectofinal.modelos;
+import proyectofinal.vistas.VistaClientes;
 
 /**
  *
@@ -10,27 +11,25 @@ package proyectofinal.modelos;
  */
 public class ModeloCliente {
     
-    private String id;
+    private String NIT;
     private String nombre;
-    private String direccion;
-    private String telefono;
+    VistaClientes vista;
 
-    public ModeloCliente() {
+    public ModeloCliente(VistaClientes vista) {
+        this.vista = vista;
     }
 
-    public ModeloCliente(String id, String nombre, String direccion, String telefono) {
-        this.id = id;
+    public ModeloCliente(String NIT, String nombre) {
+        this.NIT = NIT;
         this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
     }
 
-    public String getId() {
-        return id;
+    public String getNIT() {
+        return NIT;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setNIT(String NIT) {
+        this.NIT = NIT;
     }
 
     public String getNombre() {
@@ -41,21 +40,16 @@ public class ModeloCliente {
         this.nombre = nombre;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public VistaClientes getVista() {
+        return vista;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setVista(VistaClientes vista) {
+        this.vista = vista;
     }
+    
+    
 
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
     
     
     
