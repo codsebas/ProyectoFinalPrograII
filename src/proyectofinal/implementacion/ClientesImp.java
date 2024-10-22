@@ -66,7 +66,7 @@ public class ClientesImp implements IClientes{
     @Override
     public DefaultTableModel modeloCliente() {
         DefaultTableModel modelo = new DefaultTableModel();
-        modelo.setColumnIdentifiers(new Object[]{"Codigo", "estado"});
+        modelo.setColumnIdentifiers(new Object[]{"Nit", "Nombre"});
         conector.conectar();
 
         try {
@@ -76,8 +76,8 @@ public class ClientesImp implements IClientes{
 
             while (rs.next()) {
                 modelo.addRow(new Object[]{
-                    rs.getString("Nit"),
-                    rs.getString("Nombre")
+                    rs.getString("nit_cliente"),
+                    rs.getString("nombre_cliente")
                 });
             }
             conector.desconectar();
@@ -92,7 +92,7 @@ public class ClientesImp implements IClientes{
     @Override
     public DefaultTableModel modeloCliente(String nit) {
         DefaultTableModel modelo = new DefaultTableModel();
-        modelo.setColumnIdentifiers(new Object[]{"Codigo", "Descripcion"});
+        modelo.setColumnIdentifiers(new Object[]{"Nit", "Nombre"});
         conector.conectar();
 
         try {
@@ -103,8 +103,8 @@ public class ClientesImp implements IClientes{
 
             while (rs.next()) {
                 modelo.addRow(new Object[]{
-                    rs.getString("Nit"),
-                    rs.getString("Nombre")
+                    rs.getString("nit_cliente"),
+                    rs.getString("nombre_cliente")
                 });
             }
             conector.desconectar();
