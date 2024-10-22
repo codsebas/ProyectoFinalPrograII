@@ -4,10 +4,10 @@ import proyectofinal.modelos.ModeloCliente;
 import javax.swing.table.DefaultTableModel;
 
 public interface IClientes {
-    public boolean insertarEstadoCompra(ModeloCliente modelo);
-    public boolean eliminarEstadoCompra(String  nit);
-    public boolean actualizarEstadoCompra(ModeloCliente modelo);
-    public DefaultTableModel modeloEstadoCompra();
-    public DefaultTableModel modeloEstadoCompra(String nit);
-    public ModeloCliente mostrarEstadoCompra(String nit);
+    public boolean insertarCliente(ModeloCliente modelo);
+    public boolean eliminarCliente(String  nit);
+    public boolean actualizarCliente(ModeloCliente modelo);
+    public DefaultTableModel modeloCliente();
+    public DefaultTableModel modeloCliente(String nit);
+    public ModeloCliente mostrarCliente(String nit);
 }

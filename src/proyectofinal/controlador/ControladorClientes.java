@@ -27,6 +27,9 @@ public class ControladorClientes implements ActionListener, WindowListener, Mous
 
     @Override
     public void windowOpened(WindowEvent e) {
+        if(e.getComponent().equals(modelo.getVista())){
+            modelo.getVista().tblClientes.setModel(implementacion.modeloCliente());
+        }
     }
 
     @Override
@@ -55,6 +58,9 @@ public class ControladorClientes implements ActionListener, WindowListener, Mous
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if(e.getComponent().equals(modelo.getVista().tblClientes)){
+            modelo.getVista().txtBuscarNit.setText(String.valueOf(modelo.getVista().tblClientes.getValueAt(modelo.getVista().tblClientes.getSelectedRow(), 0)));
+        }
     }
 
     @Override
