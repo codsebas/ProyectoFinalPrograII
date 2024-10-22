@@ -4,6 +4,10 @@
  */
 package proyectofinal.vistas;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import javax.swing.JFrame;
+
 /**
  *
  * @author gerso
@@ -12,11 +16,19 @@ public class VistaMenu extends javax.swing.JFrame {
 
     /**
      * Creates new form VistaMenu
+     * 
+     * 
+     * 
+     * 
      */
-    public VistaMenu() {
+    private String rol;
+    
+    public VistaMenu(String rol) {
+        this.rol = rol;
         setTitle("Menú");
-         setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
         initComponents();
+        botonesRol(rol);
     }
 
     /**
@@ -29,29 +41,34 @@ public class VistaMenu extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnAgregarUsers = new javax.swing.JButton();
         btnVistaInventario = new javax.swing.JButton();
         btnVistaProductos = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnVistaVentas = new javax.swing.JButton();
+        btnVistaClientes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("AGREGAR USUARIOS");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarUsers.setText("AGREGAR USUARIOS");
+        btnAgregarUsers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarUsers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAgregarUsersActionPerformed(evt);
             }
         });
 
         btnVistaInventario.setText("GESTIÓN DE INVENTARIO");
 
         btnVistaProductos.setText("GESTIÓN DE PRODUCTOS");
+        btnVistaProductos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVistaProductosActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("VENTAS");
+        btnVistaVentas.setText("VENTAS");
 
-        jButton3.setText("CLIENTES");
+        btnVistaClientes.setText("CLIENTES");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -66,11 +83,11 @@ public class VistaMenu extends javax.swing.JFrame {
                             .addComponent(btnVistaInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(121, 121, 121)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
+                            .addComponent(btnVistaVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnVistaClientes, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(226, 226, 226)
-                        .addComponent(jButton1)))
+                        .addComponent(btnAgregarUsers)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -80,15 +97,15 @@ public class VistaMenu extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(28, 28, 28)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnVistaVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnVistaInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(19, 19, 19)
                         .addComponent(btnVistaProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(128, 128, 128)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnVistaClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAgregarUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26))
         );
 
@@ -112,12 +129,53 @@ public class VistaMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void botonesRol(String rol) {
+        btnAgregarUsers.setVisible(false);
+        btnVistaClientes.setVisible(false);
+        btnVistaInventario.setVisible(false);
+        btnVistaProductos.setVisible(false);
+        btnVistaVentas.setVisible(false);
+
+        switch (rol.toLowerCase()) {
+            case "admin":
+                btnAgregarUsers.setVisible(true);
+                btnVistaClientes.setVisible(true);
+                btnVistaInventario.setVisible(true);
+                btnVistaProductos.setVisible(true);
+                btnVistaVentas.setVisible(true);
+                break;
+
+            case "supervisor":
+                btnVistaInventario.setVisible(true);
+                btnVistaProductos.setVisible(true);
+                break;
+                
+            case "vendedor":
+                btnVistaVentas.setVisible(true);
+                btnVistaClientes.setVisible(true);
+                break;
+            default:
+                break;
+                
+                      
+                
+
+        }
+    }
+    private void btnAgregarUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarUsersActionPerformed
 
         VistaRegistroUsuarios registro = new VistaRegistroUsuarios();
         this.setVisible(false);
         registro.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnAgregarUsersActionPerformed
+
+    private void btnVistaProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVistaProductosActionPerformed
+        // TODO add your handling code here:
+
+        VistaProductos vistap = new VistaProductos();
+        this.setVisible(false);
+        vistap.setVisible(true);
+    }//GEN-LAST:event_btnVistaProductosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -149,17 +207,17 @@ public class VistaMenu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VistaMenu().setVisible(true);
+                new VistaMenu("admin").setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregarUsers;
+    private javax.swing.JButton btnVistaClientes;
     private javax.swing.JButton btnVistaInventario;
     private javax.swing.JButton btnVistaProductos;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnVistaVentas;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

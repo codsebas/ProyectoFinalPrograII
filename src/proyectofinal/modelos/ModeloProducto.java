@@ -11,55 +11,40 @@ package proyectofinal.modelos;
 
 public class ModeloProducto {
     
-    private String codigo;
-    private String nombre;
-    private String categoria;
+    private int idProducto;
+    private int categoriaId;
+    private String nombreProducto;
     private double precioNormal;
     private double precioPromocion;
-    private int stock;
-    private String imagenProducto;
+    private String descripcion;
+    private String rutaImagenProducto;
+    private String rutaImagenCodigoBarras;
 
-    public ModeloProducto() {
+    // Getters y setters para cada campo
+    public int getIdProducto() {
+        return idProducto;
+    }
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
-    public ModeloProducto(String codigo, String nombre, String categoria, double precioNormal, double precioPromocion, int stock, String imagenProducto) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.categoria = categoria;
-        this.precioNormal = precioNormal;
-        this.precioPromocion = precioPromocion;
-        this.stock = stock;
-        this.imagenProducto = imagenProducto;
+    public int getCategoriaId() {
+        return categoriaId;
+    }
+    public void setCategoriaId(int categoriaId) {
+        this.categoriaId = categoriaId;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getNombreProducto() {
+        return nombreProducto;
     }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
     public double getPrecioNormal() {
         return precioNormal;
     }
-
     public void setPrecioNormal(double precioNormal) {
         this.precioNormal = precioNormal;
     }
@@ -67,31 +52,28 @@ public class ModeloProducto {
     public double getPrecioPromocion() {
         return precioPromocion;
     }
-
     public void setPrecioPromocion(double precioPromocion) {
         this.precioPromocion = precioPromocion;
     }
 
-    public int getStock() {
-        return stock;
+    public String getDescripcion() {
+        return descripcion;
+    }
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public String getRutaImagenProducto() {
+        return rutaImagenProducto;
+    }
+    public void setRutaImagenProducto(String rutaImagenProducto) {
+        this.rutaImagenProducto = rutaImagenProducto;
     }
 
-    public String getImagenProducto() {
-        return imagenProducto;
+    public String getRutaImagenCodigoBarras() {
+        return rutaImagenCodigoBarras;
     }
-
-    public void setImagenProducto(String imagenProducto) {
-        this.imagenProducto = imagenProducto;
+    public void setRutaImagenCodigoBarras(String rutaImagenCodigoBarras) {
+        this.rutaImagenCodigoBarras = rutaImagenCodigoBarras;
     }
-    
-    
-    
-    
-    
-            
-    
 }

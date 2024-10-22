@@ -12,9 +12,9 @@ public class Conector {
     // DEFINIR LAS PROPIEDADES DE LA CONEXIÓN
     private static final String CLASE = "com.mysql.cj.jdbc.Driver";
     private final String HOST = "sql.freedb.tech";
-    private final String USUARIO = "freedb_gerson";
-    private final String CLAVE = "H6dCy!P5Pwt3BV3";
-    private final String BASEDATOS = "freedb_ProyectoPrograPrueba";
+    private final String USUARIO = "freedb_zoldy";
+    private final String CLAVE = "V*NhnmhtDkT2f!R";
+    private final String BASEDATOS = "freedb_laTorre";
     private final String URL;
 
     private Connection link;
@@ -22,7 +22,7 @@ public class Conector {
 
     
     public Conector() {
-        this.URL = "jdbc:mysql://sql.freedb.tech/freedb_ProyectoPrograPrueba?serverTimezone=UTC";
+        this.URL = "jdbc:mysql://sql.freedb.tech/freedb_laTorre?serverTimezone=UTC";
     }
 
     public Connection conectar() {

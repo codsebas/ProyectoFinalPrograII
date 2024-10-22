@@ -10,11 +10,6 @@ package proyectofinal.modelos;
  */
 public class ModeloInventario {
     
-    public void actualizarStock ( ModeloProducto producto, int cantidad, 
-            ModeloUsuario usuario, String razon){
-        
-        int stockActualizado = producto.getStock() + cantidad;
-        producto.setStock(stockActualizado);
-    }
+    
     
 }

@@ -10,11 +10,21 @@ package proyectofinal.modelos;
  */
 public class ModeloUsuario {
     
+    private int id; 
     private String usuario;
-    private String rol;
+  
     private String password;
+    private String rol;
 
     public ModeloUsuario() {
+    }
+
+    public int getId() {
+        return id; 
+    }
+
+    public void setId(int id) {
+        this.id = id; 
     }
 
     public String getUsuario() {
@@ -25,20 +35,21 @@ public class ModeloUsuario {
         this.usuario = usuario;
     }
 
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
-
+   
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
     
     

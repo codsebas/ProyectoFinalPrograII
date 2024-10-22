@@ -41,7 +41,7 @@ public class VistaLogin extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JTextField();
         txtUsuario = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnIniciarSesion = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -64,10 +64,10 @@ public class VistaLogin extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Iniciar Sesión");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnIniciarSesion.setText("Iniciar Sesión");
+        btnIniciarSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnIniciarSesionActionPerformed(evt);
             }
         });
 
@@ -95,7 +95,7 @@ public class VistaLogin extends javax.swing.JFrame {
                         .addComponent(txtUsuario))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(44, 44, 44)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(53, 53, 53))
@@ -113,7 +113,7 @@ public class VistaLogin extends javax.swing.JFrame {
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2))
                 .addGap(31, 31, 31)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(59, Short.MAX_VALUE))
         );
 
@@ -173,38 +173,47 @@ public class VistaLogin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPasswordActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
+      
         
-        String usuario = txtUsuario.getText();
-        String password = txtPassword.getText();
-        
-        
-        if (usuario.isEmpty() || password.isEmpty()){
-            JOptionPane.showMessageDialog(this, "Complete ambos campos");
-            return;
-        }
-        
-        
-        ModeloUsuario user = controladorUsuario.validarUsuario(usuario, password);
-        
-        if (user != null){
-            
-            
-            if (user.getRol().equals("admin")){
-                
-                VistaMenu vistaMenu = new VistaMenu();
-                
-                vistaMenu.setVisible(true);
-                this.setVisible(false);
-            } else {
-                JOptionPane.showMessageDialog(this, "Acceso denegado: No tienes privilegios de administrador.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
-        }
+       String usuario = txtUsuario.getText();
+    String password = txtPassword.getText();
+    
+
+    if (usuario.isEmpty() || password.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Complete ambos campos");
+        return;
+    }
+    
+    // Validar usuario y obtener su modelo
+    ModeloUsuario user = controladorUsuario.validarUsuario(usuario, password);
+    
+    if (user != null) {
+    
+    System.out.println("Rol del usuario: " + user.getRol());
+    
+   
+    VistaMenu vistaMenu;
+    String rol = user.getRol();
+    if (rol.equals("admin")) {
+        vistaMenu = new VistaMenu("admin");
+    } else if (rol.equals("vendedor")) {
+        vistaMenu = new VistaMenu("vendedor");
+    } else if (rol.equals("supervisor")) {
+        vistaMenu = new VistaMenu("supervisor"); 
+    } else {
+        JOptionPane.showMessageDialog(this, "Acceso denegado: Rol desconocido.");
+        return;
+    }
+    
+    vistaMenu.setVisible(true);
+    this.setVisible(false);
+} else {
+    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
+}
+
        
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         
@@ -249,7 +258,7 @@ public class VistaLogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnIniciarSesion;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

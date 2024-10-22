@@ -4,6 +4,8 @@
  */
 package proyectofinal.vistas;
 
+import proyectofinal.controlador.ControladorUsuario;
+
 /**
  *
  * @author gerso
@@ -18,6 +20,29 @@ public class VistaRegistroUsuarios extends javax.swing.JFrame {
         setTitle("Registro");
          setLocationRelativeTo(null);
     }
+    
+    private void registrarUsuario(String usuario, String password, String rol) {
+    // Crear una instancia del controlador
+    ControladorUsuario controlador = new ControladorUsuario();
+
+    // Intentar registrar al usuario
+    try {
+        controlador.registrarUsuario(usuario, usuario, password, rol.toLowerCase()); // El rol se pasa en minúsculas
+        javax.swing.JOptionPane.showMessageDialog(this, "Usuario registrado exitosamente.", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        
+        // Limpiar campos después de registrar
+        txtUsuario.setText("");
+        txtPassword.setText("");
+        roles.setSelectedIndex(0); // Restablecer el rol a "Vendedor"
+        
+    } catch (IllegalArgumentException e) {
+        // Manejo de errores en caso de que los datos no sean válidos
+        javax.swing.JOptionPane.showMessageDialog(this, e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        // Manejo de cualquier otro error que pueda ocurrir
+        javax.swing.JOptionPane.showMessageDialog(this, "Ocurrió un error al registrar el usuario: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -36,7 +61,7 @@ public class VistaRegistroUsuarios extends javax.swing.JFrame {
         txtPassword = new javax.swing.JPasswordField();
         txtUsuario = new javax.swing.JTextField();
         roles = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        btnCrearUsuario = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,7 +98,12 @@ public class VistaRegistroUsuarios extends javax.swing.JFrame {
 
         roles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Vendedor", "Supervisor" }));
 
-        jButton1.setText("Crear");
+        btnCrearUsuario.setText("Crear");
+        btnCrearUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearUsuarioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -97,7 +127,7 @@ public class VistaRegistroUsuarios extends javax.swing.JFrame {
                             .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(177, 177, 177)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnCrearUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(70, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -105,11 +135,11 @@ public class VistaRegistroUsuarios extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(38, 38, 38)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -117,9 +147,9 @@ public class VistaRegistroUsuarios extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(roles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addComponent(btnCrearUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22))
         );
 
         pack();
@@ -128,6 +158,23 @@ public class VistaRegistroUsuarios extends javax.swing.JFrame {
     private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPasswordActionPerformed
+
+    private void btnCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearUsuarioActionPerformed
+        // TODO add your handling code here:
+    
+       String usuario = txtUsuario.getText();
+       String password = new String(txtPassword.getPassword());
+       String rol = (String) roles.getSelectedItem();
+       
+       
+       if (usuario.isEmpty() || password.isEmpty()){
+          
+           javax.swing.JOptionPane.showMessageDialog(this,"Los campos Usuario y Contraseña no pueden estar vacíos.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+       return;
+       }
+       
+        registrarUsuario(usuario, password, rol);
+    }//GEN-LAST:event_btnCrearUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -165,7 +212,7 @@ public class VistaRegistroUsuarios extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnCrearUsuario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
