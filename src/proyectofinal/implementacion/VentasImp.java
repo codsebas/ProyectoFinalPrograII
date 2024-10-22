@@ -13,6 +13,7 @@ import proyectofinal.interfaces.IVentas;
 import proyectofinal.modelos.ModeloVenta;
 import proyectofinal.sql.QuerysVentas;
 import proyectofinal.sql.Conector;
+import proyectofinal.sql.QuerysClientes;
 
 /**
  *
@@ -22,6 +23,7 @@ public class VentasImp implements IVentas {
 
     Conector conector = new Conector();
     QuerysVentas sql = new QuerysVentas();
+    QuerysClientes sqlCli = new QuerysClientes();
     PreparedStatement ps;
     ResultSet rs;
     public static int no_factura;
@@ -49,31 +51,132 @@ public class VentasImp implements IVentas {
 
     @Override
     public boolean eliminarVenta(int factura) {
-        return false;
+        boolean resultado = true;
+        conector.conectar();
+        try {
+            ps = conector.preparar(sql.getELIMINAR_VENTA());
+            ps.setInt(1, factura);
+            return ps.execute();
+        } catch (SQLException ex) {
+            conector.mensaje("No se pudo eliminar el cliente", "Error al eliminar", 1);
+            return resultado;
+        }
     }
 
     @Override
     public boolean actualizarVenta(ModeloVenta modelo) {
-        return false;
+        boolean resultado = true;
+        conector.conectar();
+        ps = conector.preparar(sql.getACTUALIZAR_VENTA());
+
+        try {
+            ps.setInt(1, modelo.getNumeroFactura());
+            ps.setString(2, modelo.getUsuario());
+            ps.setString(3, modelo.getNitCliente());
+            ps.setTimestamp(4, modelo.getFechaVenta());
+            ps.setDouble(5, modelo.getTotalSinImpuestos());
+            ps.setDouble(6, modelo.getTotalImpuestos());
+            ps.setDouble(7, modelo.getCargoTarjeta());
+            ps.setDouble(8, modelo.getTotalVenta());
+            ps.setString(9, modelo.getMetodoPago());
+            resultado = ps.execute();
+        } catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error al actualizar", 1);
+        }
+        return resultado;
     }
 
     @Override
     public DefaultTableModel modeloVenta() {
-        return null;
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.setColumnIdentifiers(new Object[]{"Factura", "Nit", "Fecha", "Total Venta"});
+        conector.conectar();
+
+        try {
+            ps = conector.preparar(sql.getSELECCIONAR_TODAS_LAS_VENTAS());
+            System.out.println(ps);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getString("no_factura"),
+                    rs.getString("cliente_nit"),
+                    rs.getString("fecha_venta"),
+                    rs.getString("total_venta")
+                });
+            }
+            conector.desconectar();
+
+        } catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error", 1);
+            conector.desconectar();
+        }
+        return modelo;
     }
 
     @Override
     public DefaultTableModel modeloVenta(int factura) {
         return null;
+        
+        
     }
 
     @Override
     public ModeloVenta mostrarVenta(int factura) {
-        return null;
+        ModeloVenta modelo = new ModeloVenta();
+        conector.conectar();
+
+        try {
+            ps = conector.preparar(sql.getBUSCAR_VENTA_POR_FACTURA());
+            ps.setInt(1, factura);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                modelo.setNumeroFactura(rs.getInt(1));
+                modelo.setUsuario(rs.getString(2));
+                modelo.setNitCliente(rs.getString(3));
+                modelo.setFechaVenta(rs.getTimestamp(4));
+                modelo.setTotalSinImpuestos(rs.getDouble(5));
+                modelo.setTotalImpuestos(rs.getDouble(6));
+                modelo.setCargoTarjeta(rs.getDouble(7));
+                modelo.setTotalVenta(rs.getDouble(8));
+                modelo.setMetodoPago(rs.getString(9));
+            }
+            conector.desconectar();
+
+        } catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error", 1);
+            conector.desconectar();
+        }
+        return modelo;
     }
 
     @Override
     public DefaultComboBoxModel mostrarCliente() {
+        DefaultComboBoxModel modelo = new DefaultComboBoxModel();
+        conector.conectar();
+        try {
+            ps = conector.preparar(sqlCli.getSELECCIONAR_All_CLIENTES());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                modelo.addElement(rs.getString("nit_cliente"));
+                modelo.addElement(rs.getString("nombre_cliente"));
+            }
+            return modelo;
+        } catch (SQLException ex) {
+            conector.mensaje("Error al cargar los empleados", "Error de conexion", 0);
+            return modelo;
+        }
+    }
+
+    @Override
+    public DefaultTableModel modeloProducto() {
+        return null;
+    }
+
+    @Override
+    public DefaultTableModel modeloProducto(int idProduto) {
         return null;
     }
 

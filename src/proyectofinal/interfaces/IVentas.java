@@ -18,6 +18,8 @@ public interface IVentas {
     public boolean actualizarVenta(ModeloVenta modelo);
     public DefaultTableModel modeloVenta();
     public DefaultTableModel modeloVenta(int factura);
+    public DefaultTableModel modeloProducto();
+    public DefaultTableModel modeloProducto(int idProduto);
     public ModeloVenta mostrarVenta(int factura);
     public DefaultComboBoxModel mostrarCliente();
 }
