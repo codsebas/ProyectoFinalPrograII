@@ -4,12 +4,17 @@
  */
 package proyectofinal.dao;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import proyectofinal.modelos.ModeloProducto;
 import proyectofinal.sql.Conector;
 
@@ -19,111 +24,135 @@ import proyectofinal.sql.Conector;
  */
 public class ProductoDao {
 
-    public void registrarProducto(int categoriaId, String nombreProducto, double precioNormal, double precioPromocion, String descripcion, String rutaImagenProducto, String rutaImagenCodigoBarras) {
-    String sql = "INSERT INTO productos (categoria_id, nombre_producto, precio_normal, precio_promocion, descripcion, ruta_imagen_producto, ruta_imagen_codigo_barras) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    Connection conn = new Conector().conectar();
 
-    try (Connection conn = new Conector().conectar();  
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-        stmt.setInt(1, categoriaId);
-        stmt.setString(2, nombreProducto);
-        stmt.setDouble(3, precioNormal);
-        stmt.setDouble(4, precioPromocion);
-        stmt.setString(5, descripcion);
-        stmt.setString(6, rutaImagenProducto);
-        stmt.setString(7, rutaImagenCodigoBarras);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-   
-    public List<ModeloProducto> obtenerTodosLosProductos() {
+    public List<ModeloProducto> getProductos() {
         List<ModeloProducto> productos = new ArrayList<>();
-        String sql = "SELECT * FROM productos";
+        String sql = "SELECT p.id_producto, p.nombre_producto, p.descripcion, p.precio_normal, p.precio_promocion, p.categoria_id, c.descripcion_categoria "
+                + "FROM productos p JOIN categoria_productos c ON p.categoria_id = c.id_categoria";
 
-        try (Connection conn = new Conector().conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                ModeloProducto producto = new ModeloProducto();
-                producto.setIdProducto(rs.getInt("id_producto"));
-                producto.setCategoriaId(rs.getInt("categoria_id"));
-                producto.setNombreProducto(rs.getString("nombre_producto"));
-                producto.setPrecioNormal(rs.getDouble("precio_normal"));
-                producto.setPrecioPromocion(rs.getDouble("precio_promocion"));
-                producto.setDescripcion(rs.getString("descripcion"));
-                producto.setRutaImagenProducto(rs.getString("ruta_imagen_producto"));
-                producto.setRutaImagenCodigoBarras(rs.getString("ruta_imagen_codigo_barras"));
+                int idProducto = rs.getInt("id_producto");
+                String nombreProducto = rs.getString("nombre_producto");
+                String descripcion = rs.getString("descripcion"); // Asegúrate de que la descripción se obtenga correctamente
+                int idCategoria = rs.getInt("categoria_id"); // Obtener el ID de la categoría
+                String descripcionCategoria = rs.getString("descripcion_categoria");
+                double precioNormalProducto = rs.getDouble("precio_normal");
+                double precioPromocion = rs.getDouble("precio_promocion");
+
+                ModeloProducto producto = new ModeloProducto(idProducto, nombreProducto, descripcion, idCategoria,
+                        descripcionCategoria, precioNormalProducto,
+                        precioPromocion, null, null);
                 productos.add(producto);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error getProductos: " + e.getMessage());
         }
 
         return productos;
     }
 
-    // Método para obtener un producto por ID
-    public ModeloProducto obtenerProductoPorId(int idProducto) {
+    // Agregar un nuevo producto
+    public void addProducto(String nombreProducto, int idCategoria, double precioNormal, double precioPromocion,
+                        String descripcion, String rutaImagen) {
+    
+String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_normal, precio_promocion, descripcion, ruta_imagen_producto) VALUES (?, ?, ?, ?, ?, ?)";
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, nombreProducto);
+        stmt.setInt(2, idCategoria);
+        stmt.setDouble(3, precioNormal);
+        stmt.setDouble(4, precioPromocion);
+        stmt.setString(5, descripcion);
+        
+        
+        if (rutaImagen != null && !rutaImagen.isEmpty()) {
+            stmt.setString(6, rutaImagen); 
+        } else {
+            stmt.setNull(6, java.sql.Types.VARCHAR); 
+        }
+
+        int filasAfectadas = stmt.executeUpdate();
+        System.out.println("Filas afectadas: " + filasAfectadas);
+        if (filasAfectadas > 0) {
+            System.out.println("PRODUCTO AGREGADO");
+        } else {
+            System.out.println("No se insertó ningún producto.");
+        }
+    } catch (SQLException e) {
+        System.out.println("Error addProducto: " + e.getMessage());
+    }
+}
+    
+    
+    public ModeloProducto getOneProducto(int pIdProducto) {
         ModeloProducto producto = null;
-        String sql = "SELECT * FROM productos WHERE id_producto = ?";
+        String sql = "SELECT p.id_producto, p.nombre_producto, p.descripcion, p.precio_normal, p.precio_promocion, "
+                + "c.descripcion_categoria FROM productos p JOIN categoria_productos c ON p.categoria_id = c.id_categoria WHERE p.id_producto = ?";
 
-        try (Connection conn = new Conector().conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idProducto);
-            ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pIdProducto);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int idProducto = rs.getInt("id_producto");
+                    String nombreProducto = rs.getString("nombre_producto");
+                    String descripcion = rs.getString("descripcion");
+                    double precioNormalProducto = rs.getDouble("precio_normal");
+                    double precioPromocion = rs.getDouble("precio_promocion");
+                    String descripcionCategoria = rs.getString("descripcion_categoria");
 
-            if (rs.next()) {
-                producto = new ModeloProducto();
-                producto.setIdProducto(rs.getInt("id_producto"));
-                producto.setCategoriaId(rs.getInt("categoria_id"));
-                producto.setNombreProducto(rs.getString("nombre_producto"));
-                producto.setPrecioNormal(rs.getDouble("precio_normal"));
-                producto.setPrecioPromocion(rs.getDouble("precio_promocion"));
-                producto.setDescripcion(rs.getString("descripcion"));
-                producto.setRutaImagenProducto(rs.getString("ruta_imagen_producto"));
-                producto.setRutaImagenCodigoBarras(rs.getString("ruta_imagen_codigo_barras"));
+                    producto = new ModeloProducto(idProducto, nombreProducto, descripcion, pIdProducto,
+                            descripcionCategoria, precioNormalProducto,
+                            precioPromocion, null, null);
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error getOneProducto: " + e.getMessage());
         }
 
         return producto;
     }
 
-    // Método para actualizar un producto
-    public void actualizarProducto(ModeloProducto producto) {
-        String sql = "UPDATE productos SET categoria_id = ?, nombre_producto = ?, precio_normal = ?, precio_promocion = ?, descripcion = ?, ruta_imagen_producto = ?, ruta_imagen_codigo_barras = ? WHERE id_producto = ?";
+    // Actualizar un producto
+    public void updateProducto(int pIdProducto, String pNombreProducto, int pIdCategoria, double pPrecioNormal,
+            double pPrecioPromocion, String pDescripcion) {
+        String sql = "UPDATE productos SET nombre_producto = ?, categoria_id = ?, precio_normal = ?, precio_promocion = ?, descripcion = ? WHERE id_producto = ?";
 
-        try (Connection conn = new Conector().conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, producto.getCategoriaId());
-            stmt.setString(2, producto.getNombreProducto());
-            stmt.setDouble(3, producto.getPrecioNormal());
-            stmt.setDouble(4, producto.getPrecioPromocion());
-            stmt.setString(5, producto.getDescripcion());
-            stmt.setString(6, producto.getRutaImagenProducto());
-            stmt.setString(7, producto.getRutaImagenCodigoBarras());
-            stmt.setInt(8, producto.getIdProducto());
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, pNombreProducto);
+            stmt.setInt(2, pIdCategoria);
+            stmt.setDouble(3, pPrecioNormal);
+            stmt.setDouble(4, pPrecioPromocion);
+            stmt.setString(5, pDescripcion);
+            stmt.setInt(6, pIdProducto);
             stmt.executeUpdate();
+            System.out.println("PRODUCTO ACTUALIZADO");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error updateProducto: " + e.getMessage());
         }
     }
 
-    // Método para eliminar un producto por ID
-    public void eliminarProducto(int idProducto) {
+    // Eliminar un producto
+    public void deleteProducto(int pIdProducto) {
         String sql = "DELETE FROM productos WHERE id_producto = ?";
 
-        try (Connection conn = new Conector().conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idProducto);
-            stmt.executeUpdate();
+        try {
+            // Verificar si el producto existe antes de eliminarlo
+            ModeloProducto productoBD = this.getOneProducto(pIdProducto);
+            if (productoBD != null) {
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setInt(1, pIdProducto);
+                    stmt.executeUpdate();
+                    System.out.println("PRODUCTO ELIMINADO");
+                }
+            } else {
+                System.out.println("EL PRODUCTO A ELIMINAR NO EXISTE");
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error deleteProducto: " + e.getMessage());
         }
     }
+
 }
