@@ -88,19 +88,29 @@ public class VistaProductos extends javax.swing.JFrame {
     private void seleccionarDatosTabla() {
        int fila = tblProductos.getSelectedRow();
        if (fila >= 0) {
-            txtCodigoProducto.setText(tblProductos.getValueAt(fila, 0).toString());
-            txtNombreProducto.setText(tblProductos.getValueAt(fila, 1).toString());
-            txtDescripcion.setText(tblProductos.getValueAt(fila, 2).toString());
-            txtIdCategoria.setText(tblProductos.getValueAt(fila, 3).toString());
-            txtPrecioNormalProducto.setText(tblProductos.getValueAt(fila, 4).toString());
-            txtPrecioPromocionProducto.setText(tblProductos.getValueAt(fila, 5).toString());
-            txtImagen.setText(tblProductos.getValueAt(fila, 6).toString());
-            // Aquí puedes cargar la imagen en lblImagen si es necesario
-            ImageIcon imagen = new ImageIcon(txtImagen.getText());
-            imagen = new ImageIcon(imagen.getImage().getScaledInstance(110, 110, Image.SCALE_DEFAULT));
+           txtCodigoProducto.setText(tblProductos.getValueAt(fila, 0).toString());
+        txtNombreProducto.setText(tblProductos.getValueAt(fila, 1).toString());
+        txtDescripcion.setText(tblProductos.getValueAt(fila, 2).toString());
+        txtIdCategoria.setText(tblProductos.getValueAt(fila, 3).toString());
+        txtPrecioNormalProducto.setText(tblProductos.getValueAt(fila, 4).toString());
+        txtPrecioPromocionProducto.setText(tblProductos.getValueAt(fila, 5).toString());
+        txtImagen.setText(tblProductos.getValueAt(fila, 6).toString());
+   
+       String rutaImagen =txtImagen.getText();
+       File archivoImagen = new File(rutaImagen);
+       
+       if(archivoImagen.exists()){
+           ImageIcon imagen = new ImageIcon(archivoImagen.getAbsolutePath());
+            imagen = new ImageIcon(imagen.getImage().getScaledInstance(110, 110, Image.SCALE_SMOOTH));
             lblImagen.setIcon(imagen);
+       } else{
+          JOptionPane.showMessageDialog(this, "La imagen no existe en la ruta especificada: " + rutaImagen);
+            lblImagen.setIcon(null); // Limpiar el JLabel si no se encuentra la imagen
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Por favor, seleccione un producto de la tabla.");
     }
-    }
+}
     
     
      private void actualizar() {
@@ -170,30 +180,7 @@ public class VistaProductos extends javax.swing.JFrame {
     // Refresca la tabla para mostrar el nuevo producto
     getProductos();
 }
-     public void seleccionarDatos(){
-         int fila = tblProductos.getSelectedRow();
-         
-         if(fila !=1){
-             txtCodigoProducto.setText(String.valueOf(tblProductos.getValueAt(fila, 0))); // ID del producto
-        txtNombreProducto.setText(String.valueOf(tblProductos.getValueAt(fila, 1))); // Nombre del producto
-        txtDescripcion.setText(String.valueOf(tblProductos.getValueAt(fila, 2))); // Descripción
-        
-        
-        txtPrecioPromocionProducto.setText(String.valueOf(tblProductos.getValueAt(fila, 4))); // Precio de promoción
-        
-        txtIdCategoria.setText(String.valueOf(tblProductos.getValueAt(fila, 5))); // ID de categoría
-        txtImagen.setText(String.valueOf(tblProductos.getValueAt(fila, 6)));
-         
-         Image imagen = getToolkit().getImage(txtImagen.getText());
-        imagen = imagen.getScaledInstance(110, 110, Image.SCALE_DEFAULT);
-        lblImagen.setIcon(new ImageIcon(imagen));
-         
-         
-         }else {
-        JOptionPane.showMessageDialog(this, "Por favor, seleccione un producto de la tabla.");
-    }
-
-     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -556,15 +543,9 @@ public class VistaProductos extends javax.swing.JFrame {
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
         // TODO add your handling code here:
-        
-        
-
-
-        agregarProducto();
-        
-
        
-        
+        agregarProducto();
+       
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
 
     private void btnEliminarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProductoActionPerformed
@@ -675,7 +656,7 @@ public class VistaProductos extends javax.swing.JFrame {
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         // TODO add your handling code here:
         
-        seleccionarDatos();
+        seleccionarDatosTabla();
     }//GEN-LAST:event_tblProductosMouseClicked
 
     /**
