@@ -21,7 +21,7 @@ public class VistaVentas extends javax.swing.JFrame {
         this.setTitle("Ventas");
         ModeloVenta modeloVenta = new ModeloVenta(this);
         ModeloDetalleVenta modeloDetVenta = new ModeloDetalleVenta(this);
-        ControladorVentas controlador = new ControladorVentas(modeloVenta, modeloDetVenta);
+        ControladorVentas controlador = new ControladorVentas(modeloVenta);
         setControladorVentas(controlador);
     }
 
@@ -219,6 +219,7 @@ public class VistaVentas extends javax.swing.JFrame {
 
             }
         ));
+        tblMostrarProductos.setToolTipText("");
         jScrollPane2.setViewportView(tblMostrarProductos);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);

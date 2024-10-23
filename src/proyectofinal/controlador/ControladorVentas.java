@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
 import proyectofinal.modelos.ModeloDetalleVenta;
 import proyectofinal.modelos.ModeloVenta;
 import proyectofinal.implementacion.DetalleVentasImp;
@@ -18,15 +19,13 @@ import proyectofinal.implementacion.VentasImp;
  * @author sebas
  */
 public class ControladorVentas implements ActionListener, WindowListener, MouseListener{
-    ModeloVenta mVenta;
-    ModeloDetalleVenta mDetVenta;
+    ModeloVenta modelo;
     
     DetalleVentasImp impDetVenta = new DetalleVentasImp();
     VentasImp impVenta = new VentasImp();
 
-    public ControladorVentas(ModeloVenta mVenta, ModeloDetalleVenta mDetVenta) {
-        this.mVenta = mVenta;
-        this.mDetVenta = mDetVenta;
+    public ControladorVentas(ModeloVenta modelo) {
+        this.modelo = modelo;
     }
 
     @Override
@@ -35,6 +34,10 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
     @Override
     public void windowOpened(WindowEvent e) {
+        if(e.getComponent().equals(modelo.getVista())){
+            modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto());
+            modelo.getVista().cmbClientes.setModel(impVenta.mostrarCliente());
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import proyectofinal.interfaces.IVentas;
 import proyectofinal.modelos.ModeloVenta;
+import proyectofinal.modelos.ProductoTableModel;
 import proyectofinal.sql.QuerysVentas;
 import proyectofinal.sql.Conector;
 import proyectofinal.sql.QuerysClientes;
@@ -58,7 +59,7 @@ public class VentasImp implements IVentas {
             ps.setInt(1, factura);
             return ps.execute();
         } catch (SQLException ex) {
-            conector.mensaje("No se pudo eliminar el cliente", "Error al eliminar", 1);
+            conector.mensaje("No se pudo eliminar la factura", "Error al eliminar", 1);
             return resultado;
         }
     }
@@ -88,7 +89,12 @@ public class VentasImp implements IVentas {
 
     @Override
     public DefaultTableModel modeloVenta() {
-        DefaultTableModel modelo = new DefaultTableModel();
+        DefaultTableModel modelo = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; 
+        }
+    };
         modelo.setColumnIdentifiers(new Object[]{"Factura", "Nit", "Fecha", "Total Venta"});
         conector.conectar();
 
@@ -117,8 +123,7 @@ public class VentasImp implements IVentas {
     @Override
     public DefaultTableModel modeloVenta(int factura) {
         return null;
-        
-        
+
     }
 
     @Override
@@ -160,8 +165,7 @@ public class VentasImp implements IVentas {
             ps = conector.preparar(sqlCli.getSELECCIONAR_All_CLIENTES());
             rs = ps.executeQuery();
             while (rs.next()) {
-                modelo.addElement(rs.getString("nit_cliente"));
-                modelo.addElement(rs.getString("nombre_cliente"));
+                modelo.addElement(rs.getString("nit_cliente") + "-" + rs.getString("nombre_cliente"));
             }
             return modelo;
         } catch (SQLException ex) {
@@ -172,12 +176,61 @@ public class VentasImp implements IVentas {
 
     @Override
     public DefaultTableModel modeloProducto() {
-        return null;
+        ProductoTableModel modelo = new ProductoTableModel();
+        modelo.setColumnIdentifiers(new Object[]{"Id Producto", "Nombre", "Precio", "Stock"});
+        conector.conectar();
+
+        try {
+            ps = conector.preparar(sql.getSELECCIONAR_TODOS_LOS_PRODUCTOS());
+
+            System.out.println(ps);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getString("id_producto"),
+                    rs.getString("nombre_producto"),
+                    rs.getString("precio_normal"),
+                    rs.getString("stock_producto"),
+                    null
+                });
+            }
+            conector.desconectar();
+
+        } catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error", 1);
+            conector.desconectar();
+        }
+        return modelo;
     }
 
     @Override
     public DefaultTableModel modeloProducto(int idProduto) {
-        return null;
+        ProductoTableModel modelo = new ProductoTableModel();
+        modelo.setColumnIdentifiers(new Object[]{"Id Producto", "Nombre", "Precio", "Stock"});
+        conector.conectar();
+
+        try {
+            ps = conector.preparar(sql.getSELECCIONAR_PRODUCTO());
+            ps.setInt(1, idProduto);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getString("id_producto"),
+                    rs.getString("nombre_producto"),
+                    rs.getString("precio_normal"),
+                    rs.getString("stock_producto")
+                });
+            }
+            conector.desconectar();
+
+        } catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error", 1);
+            conector.desconectar();
+        }
+        return modelo;
     }
 
 }

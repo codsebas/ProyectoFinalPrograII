@@ -15,14 +15,14 @@ public class QuerysVentas {
     private final String ACTUALIZAR_VENTA = "UPDATE ventas SET total_venta = ?, metodo_pago = ? WHERE no_factura = ?";
     private final String ELIMINAR_VENTA = "DELETE FROM ventas WHERE no_factura = ?";
     private final String INSERTAR_VENTA = "INSERT INTO ventas (usuario_user, cliente_nit, fecha_venta, total_sin_impuestos, total_con_impuestos, cargo_tarjeta, total_venta, metodo_pago) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private final String SELECCIONAR_PRODUCTOS = "SELECT p.id_producto, p.nombre_producto, p.precio_normal, i.stock_producto\n"
+    private final String SELECCIONAR_TODOS_LOS_PRODUCTOS = "SELECT p.id_producto, p.nombre_producto, p.precio_normal, i.stock_producto\n"
             + "FROM productos p\n"
             + "JOIN inventarios i ON p.id_producto = i.producto_id\n"
-            + "WHERE i.stock_producto > 1;";
-
-    public String getSELECCIONAR_PRODUCTOS() {
-        return SELECCIONAR_PRODUCTOS;
-    }
+            + "WHERE i.stock_producto >= 1;";
+    private final String SELECCIONAR_PRODUCTO = "SELECT p.id_producto, p.nombre_producto, p.precio_normal, i.stock_producto\n"
+            + "FROM productos p\n"
+            + "JOIN inventarios i ON p.id_producto = i.producto_id\n"
+            + "WHERE i.stock_producto >= 1 AND p.id_producto = ?;";
 
     public String getSELECCIONAR_TODAS_LAS_VENTAS() {
         return SELECCIONAR_TODAS_LAS_VENTAS;
@@ -44,4 +44,11 @@ public class QuerysVentas {
         return INSERTAR_VENTA;
     }
 
+    public String getSELECCIONAR_TODOS_LOS_PRODUCTOS() {
+        return SELECCIONAR_TODOS_LOS_PRODUCTOS;
+    }
+
+    public String getSELECCIONAR_PRODUCTO() {
+        return SELECCIONAR_PRODUCTO;
+    }
 }
