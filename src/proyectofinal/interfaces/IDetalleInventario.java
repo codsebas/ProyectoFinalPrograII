@@ -12,6 +12,8 @@ import proyectofinal.modelos.ModeloDetalleInventario;
  * @author javie
  */
 public interface IDetalleInventario {
-    public boolean actualizarEstadoCompra(ModeloDetalleInventario modelo);
+    
     public DefaultTableModel modeloDetalleInventario();
+    public DefaultTableModel modeloDetalleInventario(int codigo);
+    public ModeloDetalleInventario mostrarCliente(int detalle);
 }
