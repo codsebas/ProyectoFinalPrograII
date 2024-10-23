@@ -19,6 +19,11 @@ public class ModeloDetalleInventario {
     private int cantidadModificada;
     private String tipoModificacion;
     private String MotivoModificacion;
+    private int IdDetalleF;
+    private int idProductoF;
+    private String FechaF;
+    private int cantidadF;
+     
 
     public ModeloDetalleInventario() {
     }
@@ -35,15 +40,54 @@ public class ModeloDetalleInventario {
         this.vista = vista;
     }
 
-    public ModeloDetalleInventario(int idDetalle, int productoId, String usuario, String fechaModificacion, String tipoModificacion, String MotivoModificacion, int cantidadModificada) {
+    public ModeloDetalleInventario(VistaDetalleInventarios vista, int idDetalle, int productoId, String usuario, String fechaModificacion, int cantidadModificada, String tipoModificacion, String MotivoModificacion, int IdDetalleF, int idProductoF, String FechaF, int cantidadF) {
+        this.vista = vista;
         this.idDetalle = idDetalle;
         this.productoId = productoId;
         this.usuario = usuario;
         this.fechaModificacion = fechaModificacion;
+        this.cantidadModificada = cantidadModificada;
         this.tipoModificacion = tipoModificacion;
         this.MotivoModificacion = MotivoModificacion;
-        this.cantidadModificada= cantidadModificada;
+        this.IdDetalleF = IdDetalleF;
+        this.idProductoF = idProductoF;
+        this.FechaF = FechaF;
+        this.cantidadF = cantidadF;
     }
+
+    public int getIdDetalleF() {
+        return IdDetalleF;
+    }
+
+    public void setIdDetalleF(int IdDetalleF) {
+        this.IdDetalleF = IdDetalleF;
+    }
+
+    public int getIdProductoF() {
+        return idProductoF;
+    }
+
+    public void setIdProductoF(int idProductoF) {
+        this.idProductoF = idProductoF;
+    }
+
+    public String getFechaF() {
+        return FechaF;
+    }
+
+    public void setFechaF(String FechaF) {
+        this.FechaF = FechaF;
+    }
+
+    public int getCantidadF() {
+        return cantidadF;
+    }
+
+    public void setCantidadF(int cantidadF) {
+        this.cantidadF = cantidadF;
+    }
+
+   
 
     public int getIdDetalle() {
         return idDetalle;
