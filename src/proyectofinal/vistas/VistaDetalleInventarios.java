@@ -23,11 +23,10 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         this.setTitle("Detalle Inventario");
-        ModeloDetalleInventario modelo = new ModeloDetalleInventario (this);
-         ControladorDetalleInventario controlador = new ControladorDetalleInventario (modelo);
-         setControladorDetalleInventario(controlador);
-        
-        
+        ModeloDetalleInventario modelo = new ModeloDetalleInventario(this);
+        ControladorDetalleInventario controlador = new ControladorDetalleInventario(modelo);
+        setControladorDetalleInventario(controlador);
+
     }
 
     /**
@@ -92,20 +91,21 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnVisualizar)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(255, 255, 255)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(147, 147, 147)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(66, 66, 66)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtBuscarDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(138, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3)
+                            .addComponent(txtBuscarDetalle)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(255, 255, 255)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnVisualizar)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(147, 147, 147)))))
+                .addContainerGap(118, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,8 +177,8 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void setControladorDetalleInventario(ControladorDetalleInventario controlador) {
-     tblDetallesInventarios.addMouseListener((MouseListener) controlador);
-     btnVisualizar.addActionListener((ActionListener) controlador);
-     this.addWindowListener((WindowListener) controlador);
+        tblDetallesInventarios.addMouseListener(controlador);
+        btnVisualizar.addActionListener(controlador);
+        this.addWindowListener(controlador);
     }
 }

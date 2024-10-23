@@ -14,5 +14,6 @@ import proyectofinal.modelos.ModeloDetalleInventario;
 public interface IDetalleInventario {
     
     public DefaultTableModel modeloDetalleInventario();
-    public DefaultTableModel modeloDetalleInventario(int txtDetalleInventario);
+    public DefaultTableModel modeloDetalleInventario(int codigo);
+    public ModeloDetalleInventario mostrarCliente(int detalle);
 }

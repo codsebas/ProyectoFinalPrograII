@@ -9,12 +9,14 @@ package proyectofinal.sql;
  * @author javie
  */
 public class QuerysDetalleInventario {
-    private final String MOSTRAR_DETALLES_INVENTARIOS = "select * from detalle_inventarios";
-    private final String BUSCAR_DETALLE_INVENTARIOS = "SELECT * FROM detalle_invetarios WHERE id_detalle = ?";
+    private final String MOSTRAR_TODOS_DETALLES = "SELECT * FROM detalle_inventarios";
+    private final String BUSCAR_DETALLE_INVENTARIOS = "SELECT * FROM detalle_inventarios WHERE id_detalle=?";
 
-    public String getMOSTRAR_DETALLES_INVENTARIOS() {
-        return MOSTRAR_DETALLES_INVENTARIOS;
+    public String getMOSTRAR_TODOS_DETALLES() {
+        return MOSTRAR_TODOS_DETALLES;
     }
+
+   
 
     public String getBUSCAR_DETALLE_INVENTARIOS() {
         return BUSCAR_DETALLE_INVENTARIOS;

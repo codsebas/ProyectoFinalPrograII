@@ -16,26 +16,15 @@ public class ModeloDetalleInventario {
     private int productoId;
     private String usuario;
     private String fechaModificacion;
+    private int cantidadModificada;
     private String tipoModificacion;
     private String MotivoModificacion;
-    
-    
-    
-    public ModeloDetalleInventario(VistaDetalleInventarios aThis) {
-    }
-
-    public ModeloDetalleInventario(VistaDetalleInventarios vista, int idDetalle, int productoId, String usuario, String fechaModificacion, String tipoModificacion, String MotivoModificacion) {
-        this.vista = vista;
-        this.idDetalle = idDetalle;
-        this.productoId = productoId;
-        this.usuario = usuario;
-        this.fechaModificacion = fechaModificacion;
-        this.tipoModificacion = tipoModificacion;
-        this.MotivoModificacion = MotivoModificacion;
-    }
 
     public ModeloDetalleInventario() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public ModeloDetalleInventario(VistaDetalleInventarios vista) {
+        this.vista = vista;
     }
 
     public VistaDetalleInventarios getVista() {
@@ -44,6 +33,16 @@ public class ModeloDetalleInventario {
 
     public void setVista(VistaDetalleInventarios vista) {
         this.vista = vista;
+    }
+
+    public ModeloDetalleInventario(int idDetalle, int productoId, String usuario, String fechaModificacion, String tipoModificacion, String MotivoModificacion, int cantidadModificada) {
+        this.idDetalle = idDetalle;
+        this.productoId = productoId;
+        this.usuario = usuario;
+        this.fechaModificacion = fechaModificacion;
+        this.tipoModificacion = tipoModificacion;
+        this.MotivoModificacion = MotivoModificacion;
+        this.cantidadModificada= cantidadModificada;
     }
 
     public int getIdDetalle() {
@@ -94,6 +93,17 @@ public class ModeloDetalleInventario {
         this.MotivoModificacion = MotivoModificacion;
     }
 
+    public int getCantidadModificada() {
+        return cantidadModificada;
+    }
+
+    public void setCantidadModificada(int cantidadModificada) {
+        this.cantidadModificada = cantidadModificada;
+    }
+    
+    
+    
+   
 
   
 }
