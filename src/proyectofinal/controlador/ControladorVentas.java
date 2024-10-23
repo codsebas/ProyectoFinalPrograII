@@ -10,7 +10,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -36,34 +39,37 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
     }
 
     private void agregarProductoADetalle(int selectedRow, int cantidad) {
-    DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel(); // Tabla de detalle de venta
+        DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel(); // Tabla de detalle de venta
 
-    String idProducto = modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 0).toString(); // Columna 0: ID del producto
-    String nombreProducto = modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 1).toString(); // Columna 1: Nombre del producto
-    double precioUnitario = Double.parseDouble(modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 2).toString()); // Columna 2: Precio unitario
-    int stockActual = Integer.parseInt(modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 3).toString()); // Columna 3: Stock actual
+        String idProducto = modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 0).toString(); // Columna 0: ID del producto
+        String nombreProducto = modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 1).toString(); // Columna 1: Nombre del producto
+        double precioUnitario = Double.parseDouble(modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 2).toString()); // Columna 2: Precio unitario
+        int stockActual = Integer.parseInt(modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 3).toString()); // Columna 3: Stock actual
 
-    if (cantidad > stockActual) {
-        JOptionPane.showMessageDialog(null, "No hay suficiente stock disponible.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
+        if (cantidad > stockActual) {
+            JOptionPane.showMessageDialog(null, "No hay suficiente stock disponible.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        double totalLinea = precioUnitario * cantidad;
+
+        detalleModel.addRow(new Object[]{idProducto, nombreProducto, cantidad, precioUnitario, totalLinea, "Eliminar"});
+
+        modelo.getVista().tblListaProductos.setModel(detalleModel);
+
+        int nuevoStock = stockActual - cantidad;
+        modelo.getVista().tblMostrarProductos.setValueAt(nuevoStock, selectedRow, 3);
     }
 
-    double totalLinea = precioUnitario * cantidad;
+    private void limpiar() {
 
-    detalleModel.addRow(new Object[]{idProducto, nombreProducto, cantidad, precioUnitario, totalLinea, "Eliminar"});
-
-    modelo.getVista().tblListaProductos.setModel(detalleModel);
-
-    int nuevoStock = stockActual - cantidad;
-    modelo.getVista().tblMostrarProductos.setValueAt(nuevoStock, selectedRow, 3); // Actualizar el stock en la columna 3
-}
-
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         int selectedRow = modelo.getVista().tblMostrarProductos.getSelectedRow();
         if (selectedRow != -1) {
-            int stockActual = (int) modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 3); // Suponiendo que el stock está en la columna 3
+            int stockActual = (int) modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 3);
 
             String cantidadStr = JOptionPane.showInputDialog(null, "Ingrese la cantidad:", "Cantidad", JOptionPane.QUESTION_MESSAGE);
             if (cantidadStr != null && !cantidadStr.isEmpty()) {
@@ -78,39 +84,67 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
                 }
             }
         }
+
+        if (e.getActionCommand().equals(modelo.getVista().btnAgregarCliente)) { //Llama a mantenimiento de clientes
+
+        } else if (e.getActionCommand().equals(modelo.getVista().btnBuscar)) { //Busca productos
+
+        } else if (e.getActionCommand().equals(modelo.getVista().btnCancelar)) { //Cancela busqueda
+
+        } else if (e.getActionCommand().equals(modelo.getVista().btnGuardar)) { //Guarda venta y detalle de venta
+            boolean resultado;
+            ModeloVenta modelo = new ModeloVenta();
+            modelo.setUsuario(this.modelo.getVista().txtUsuario.getText());
+            modelo.setNitCliente(this.modelo.getVista().cmbClientes.getSelectedItem().toString());
+            modelo.setTotalSinImpuestos(Double.parseDouble(this.modelo.getVista().txtSubtotal.getText()));
+            modelo.setTotalImpuestos(Double.parseDouble(this.modelo.getVista().txtImpuestos.getText()));
+            modelo.setCargoTarjeta(Double.parseDouble(this.modelo.getVista().txtCargosAdicionales.getText()));
+            modelo.setTotalVenta(Double.parseDouble(this.modelo.getVista().txtTotalFinal.getText()));
+            modelo.setNitCliente(this.modelo.getVista().cmbMetodoPago.getSelectedItem().toString());
+            resultado = impVenta.insertarVenta(modelo);
+            if (!resultado) {
+                System.out.println("Inserción exitosa");
+                limpiar();
+            } else {
+                System.out.println("Inserción falló");
+            }
+        } else if (e.getActionCommand().equals(modelo.getVista().btnRegresar)) { //Regresa a vista anterior
+
+        } else if (e.getActionCommand().equals(modelo.getVista().btnVaciarLista)) { //Vacía lista de productos
+
+        }
     }
 
     @Override
 public void windowOpened(WindowEvent e) {
     if (e.getComponent().equals(modelo.getVista())) {
+        // Cargar productos en la tabla de productos
         DefaultTableModel model = impVenta.modeloProducto(); // Obtén el modelo de productos
         
-        model.addColumn("Seleccionar"); 
-        
-        // Asignar el modelo actualizado a la tabla de productos
+        // Agregar columna para el botón "Seleccionar"
+        model.addColumn("Seleccionar");
         modelo.getVista().tblMostrarProductos.setModel(model);
 
         // Configurar la columna del botón "Seleccionar" en la tabla de productos
-        TableColumn productColumn = modelo.getVista().tblMostrarProductos.getColumnModel().getColumn(model.getColumnCount() - 1); // Obtener la última columna
-        productColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos)); // Pasar ambas tablas
-        productColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos));
-        
+        TableColumn productColumn = modelo.getVista().tblMostrarProductos.getColumnModel().getColumn(model.getColumnCount() - 1);
+        productColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo)); // Pasa el modelo correctamente
+        productColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo));  // Pasa el modelo correctamente
+
         // Cargar clientes en el combo box de clientes
         modelo.getVista().cmbClientes.setModel(impVenta.mostrarCliente());
 
-        // Cargar la tabla de detalle de ventas
-        DefaultTableModel detalleModel = new DefaultTableModel(); // Crear un modelo para la tabla de detalle
-        detalleModel.setColumnIdentifiers(new Object[]{"ID Producto", "Nombre", "Cantidad", "Precio Unitario", "Total Línea", "Eliminar"}); // Definir las columnas necesarias
-        modelo.getVista().tblListaProductos.setModel(detalleModel); // Asignar el modelo a la tabla de detalle de ventas
-        
+        // Configurar la tabla de detalle de ventas
+        DefaultTableModel detalleModel = new DefaultTableModel();
+        detalleModel.setColumnIdentifiers(new Object[]{"ID Producto", "Nombre", "Cantidad", "Precio Unitario", "Total Línea", "Eliminar"});
+        modelo.getVista().tblListaProductos.setModel(detalleModel);
+
         // Configurar el botón "Eliminar" en la tabla de detalle
-        TableColumn detailColumn = modelo.getVista().tblListaProductos.getColumnModel().getColumn(5); // Columna 5 para "Eliminar"
-        detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos)); // Pasar ambas tablas
-        detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos));
+        TableColumn detailColumn = modelo.getVista().tblListaProductos.getColumnModel().getColumn(5);
+        detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo)); // Pasa el modelo correctamente
+        detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo));  // Pasa el modelo correctamente
     }
 }
 
-    
 
     @Override
     public void windowClosing(WindowEvent e) {

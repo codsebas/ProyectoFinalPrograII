@@ -13,16 +13,20 @@ import java.awt.event.ActionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class ButtonRenderer extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
+
     private JButton renderButton;
     private JButton editButton;
     private String text;
     private JTable tableProductos;
     private JTable tableDetalle;
     private int selectedRow;
+    private ModeloVenta modelo; // Referencia al modelo pasado por el controlador
 
-    public ButtonRenderer(JTable tableProductos, JTable tableDetalle) {
+    // Constructor que acepta el modelo ya existente
+    public ButtonRenderer(JTable tableProductos, JTable tableDetalle, ModeloVenta modelo) {
         this.tableProductos = tableProductos;
         this.tableDetalle = tableDetalle;
+        this.modelo = modelo; // Asigna el modelo pasado como argumento
         renderButton = new JButton();
         editButton = new JButton();
         editButton.setFocusPainted(false);
@@ -48,49 +52,50 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
     }
 
     @Override
-public void actionPerformed(ActionEvent e) {
-    JTable table = (JTable) SwingUtilities.getAncestorOfClass(JTable.class, (Component) e.getSource());
+    public void actionPerformed(ActionEvent e) {
+        JTable table = (JTable) SwingUtilities.getAncestorOfClass(JTable.class, (Component) e.getSource());
 
-    if (table.equals(tableProductos)) {
-        // Botón "Seleccionar" de la tabla de productos
-        int cantidad = pedirCantidad();
-        if (cantidad > 0) {
-            int stockActual = Integer.parseInt(tableProductos.getValueAt(selectedRow, 3).toString()); // Columna 3: Stock actual
-            if (cantidad > stockActual) {
-                JOptionPane.showMessageDialog(null, "No hay suficiente stock disponible.", "Error", JOptionPane.ERROR_MESSAGE);
-                return; // Detenemos si la cantidad supera el stock
-            }
-            agregarProductoADetalle(selectedRow, cantidad); // Agregar producto a la tabla de detalle
-            // Actualizar el stock en la tabla de productos
-            int nuevoStock = stockActual - cantidad;
-            tableProductos.setValueAt(nuevoStock, selectedRow, 3); // Actualizar el stock en la columna 3
-        }
-    } else if (table.equals(tableDetalle)) {
-        // Botón "Eliminar" de la tabla de detalle
-        if (selectedRow != -1) {
-            // Obtener el ID del producto que se va a eliminar de la tabla de detalle
-            String idProducto = tableDetalle.getValueAt(selectedRow, 0).toString(); // Asumiendo que el ID está en la columna 0
-            int cantidadEliminar = Integer.parseInt(tableDetalle.getValueAt(selectedRow, 2).toString()); // Cantidad a eliminar (columna 2)
-
-            // Buscar el producto correspondiente en la tabla de productos
-            for (int i = 0; i < tableProductos.getRowCount(); i++) {
-                if (tableProductos.getValueAt(i, 0).toString().equals(idProducto)) {
-                    // Recuperar el stock actual en la tabla de productos
-                    int stockActual = Integer.parseInt(tableProductos.getValueAt(i, 3).toString()); // Columna 3: Stock
-                    int nuevoStock = stockActual + cantidadEliminar; // Sumar la cantidad eliminada al stock
-                    tableProductos.setValueAt(nuevoStock, i, 3); // Actualizar el stock en la tabla de productos
-                    break; // Producto encontrado, romper el bucle
+        if (table.equals(tableProductos)) {
+            // Botón "Seleccionar" de la tabla de productos
+            int cantidad = pedirCantidad();
+            if (cantidad > 0) {
+                int stockActual = Integer.parseInt(tableProductos.getValueAt(selectedRow, 3).toString()); // Columna 3: Stock actual
+                if (cantidad > stockActual) {
+                    JOptionPane.showMessageDialog(null, "No hay suficiente stock disponible.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return; // Detenemos si la cantidad supera el stock
                 }
+                agregarProductoADetalle(selectedRow, cantidad); // Agregar producto a la tabla de detalle
+                // Actualizar el stock en la tabla de productos
+                int nuevoStock = stockActual - cantidad;
+                tableProductos.setValueAt(nuevoStock, selectedRow, 3); // Actualizar el stock en la columna 3
+                recalcularTotales();
             }
+        } else if (table.equals(tableDetalle)) {
+            // Botón "Eliminar" de la tabla de detalle
+            if (selectedRow != -1) {
+                // Obtener el ID del producto que se va a eliminar de la tabla de detalle
+                String idProducto = tableDetalle.getValueAt(selectedRow, 0).toString(); // Asumiendo que el ID está en la columna 0
+                int cantidadEliminar = Integer.parseInt(tableDetalle.getValueAt(selectedRow, 2).toString()); // Cantidad a eliminar (columna 2)
 
-            // Eliminar el producto de la tabla de detalle
-            ((DefaultTableModel) tableDetalle.getModel()).removeRow(selectedRow);
+                // Buscar el producto correspondiente en la tabla de productos
+                for (int i = 0; i < tableProductos.getRowCount(); i++) {
+                    if (tableProductos.getValueAt(i, 0).toString().equals(idProducto)) {
+                        // Recuperar el stock actual en la tabla de productos
+                        int stockActual = Integer.parseInt(tableProductos.getValueAt(i, 3).toString()); // Columna 3: Stock
+                        int nuevoStock = stockActual + cantidadEliminar; // Sumar la cantidad eliminada al stock
+                        tableProductos.setValueAt(nuevoStock, i, 3); // Actualizar el stock en la tabla de productos
+                        break; // Producto encontrado, romper el bucle
+                    }
+                }
+
+                // Eliminar el producto de la tabla de detalle
+                ((DefaultTableModel) tableDetalle.getModel()).removeRow(selectedRow);
+                recalcularTotales();
+            }
         }
+
+        fireEditingStopped(); // Detener la edición de la celda
     }
-
-    fireEditingStopped(); // Detener la edición de la celda
-}
-
 
     // Método para pedir cantidad con JOptionPane
     private int pedirCantidad() {
@@ -114,5 +119,27 @@ public void actionPerformed(ActionEvent e) {
         double totalLinea = precioUnitario * cantidad;
 
         detalleModel.addRow(new Object[]{idProducto, nombreProducto, cantidad, precioUnitario, totalLinea, "Eliminar"}); // Agregar fila
+    }
+
+    // Método para recalcular los totales
+    private void recalcularTotales() {
+        DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel();
+        double subtotal = 0.0;
+        double impuestos = 0.0;
+        double total = 0.0;
+        double impuestoPorcentaje = 0.12; // Porcentaje de impuestos
+
+        for (int i = 0; i < detalleModel.getRowCount(); i++) {
+            double totalLinea = Double.parseDouble(detalleModel.getValueAt(i, 4).toString()); // Columna 4: Total de la línea
+            subtotal += totalLinea;
+        }
+
+        impuestos = subtotal * impuestoPorcentaje;
+        total = subtotal + impuestos;
+
+        // Actualizar los campos visuales (asegúrate de que estos sean los correctos en tu vista)
+        modelo.getVista().txtSubtotal.setText(String.format("%.2f", subtotal));
+        modelo.getVista().txtImpuestos.setText(String.format("%.2f", impuestos));
+        modelo.getVista().txtTotalFinal.setText(String.format("%.2f", total));
     }
 }

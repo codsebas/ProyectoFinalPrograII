@@ -7,12 +7,18 @@ package proyectofinal.implementacion;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import proyectofinal.interfaces.IVentas;
+import proyectofinal.interfaces.IDetalleVentas;
+import proyectofinal.modelos.ModeloDetalleVenta;
 import proyectofinal.modelos.ModeloVenta;
 import proyectofinal.modelos.ProductoTableModel;
 import proyectofinal.sql.QuerysVentas;
+import proyectofinal.sql.QuerysDetalleVentas;
 import proyectofinal.sql.Conector;
 import proyectofinal.sql.QuerysClientes;
 
@@ -20,14 +26,36 @@ import proyectofinal.sql.QuerysClientes;
  *
  * @author sebas
  */
-public class VentasImp implements IVentas {
+public class VentasImp implements IVentas, IDetalleVentas {
 
     Conector conector = new Conector();
     QuerysVentas sql = new QuerysVentas();
     QuerysClientes sqlCli = new QuerysClientes();
+    QuerysDetalleVentas sqlDet = new QuerysDetalleVentas();
     PreparedStatement ps;
     ResultSet rs;
     public static int no_factura;
+    
+    private List<ModeloDetalleVenta> agregarDetalleAModelo(JTable ltblListaProductos, int numFactura) {
+        List<ModeloDetalleVenta> detallesVenta = new ArrayList<>();
+        
+        int rowCount = ltblListaProductos.getRowCount();
+        
+        for (int i = 0; i < rowCount; i++) {
+            ModeloDetalleVenta detalle = new ModeloDetalleVenta();
+            
+            detalle.setNumFactura(numFactura);
+            detalle.setNumLinea(i + 1);
+            detalle.setProductoId((int) ltblListaProductos.getValueAt(i, 0));
+            detalle.setCantidadProducto((int) ltblListaProductos.getValueAt(i, 1));
+            detalle.setPrecioUnitario((double) ltblListaProductos.getValueAt(i, 2));
+            detalle.setTotalLinea((double) ltblListaProductos.getValueAt(i, 3));
+            
+            detallesVenta.add(detalle);
+        }
+        
+        return detallesVenta;
+    }
 
     @Override
     public boolean insertarVenta(ModeloVenta modelo) {
@@ -43,15 +71,22 @@ public class VentasImp implements IVentas {
             ps.setDouble(5, modelo.getCargoTarjeta());
             ps.setDouble(6, modelo.getTotalVenta());
             ps.setString(7, modelo.getMetodoPago());
-            
+            ps.execute();
             int filasInsertadas = ps.executeUpdate();
             if(filasInsertadas > 0){
                 ResultSet rs = ps.getGeneratedKeys();
                 if(rs.next()){
                     no_factura = rs.getInt(1);
+                    List<ModeloDetalleVenta> listaModelo = agregarDetalleAModelo(modelo.getVista().tblListaProductos, no_factura);
+                    resultado = insertarDetalleVenta(listaModelo);
+                    if(!resultado){
+                        conector.mensaje("Se ha insertado correctamente", "Confirmacion", 2);
+                    } else {
+                        conector.mensaje("No se insertó correctamente", "Error", 1);
+                    }
                 }
             }
-            return ps.execute();
+            return resultado;
             
         } catch (SQLException ex) {
             conector.mensaje("Error en la insersción", "Error", 1);
@@ -241,5 +276,39 @@ public class VentasImp implements IVentas {
         }
         return modelo;
     }
+    
+    //Detalles de venta
+
+    @Override
+    public boolean insertarDetalleVenta(List<ModeloDetalleVenta> modelo) {
+        boolean resultado = true;
+        conector.conectar();
+        ps = conector.preparar(sqlDet.getINSERTAR_DETALLE_VENTA());
+        try {
+            for(ModeloDetalleVenta detalle : modelo){
+                ps.setInt(1, detalle.getNumFactura());
+                ps.setInt(2, detalle.getNumLinea());
+                ps.setInt(3, detalle.getProductoId());
+                ps.setInt(4, detalle.getCantidadProducto());
+                ps.setDouble(5, detalle.getPrecioUnitario());
+                ps.setDouble(6, detalle.getTotalLinea());
+            }
+            return ps.execute();
+        } catch (SQLException ex) {
+            conector.mensaje("Error en la insersción", "Error", 1);
+            return resultado;
+        }
+    }
+
+    @Override
+    public boolean eliminarDetalleVenta(int factura) {
+        return false;
+    }
+
+    @Override
+    public DefaultTableModel modeloDetalleVenta() {
+        return null;
+    }
+
 
 }
