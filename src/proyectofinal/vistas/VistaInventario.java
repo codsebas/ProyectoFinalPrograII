@@ -7,6 +7,7 @@ package proyectofinal.vistas;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import proyectofinal.dao.InventarioDao;
 import proyectofinal.dao.ProductoDao;
 import proyectofinal.modelos.ModeloProducto;
 
@@ -23,38 +24,71 @@ public class VistaInventario extends javax.swing.JFrame {
         initComponents();
         setTitle("Inventario");
          setLocationRelativeTo(null);
-         this.productos = this.getProductos();
+         cargarInventario();
     }
-ProductoDao productoDao = new ProductoDao();
-    List<ModeloProducto> productos = new ArrayList<>();
-    
-    
-     public List<ModeloProducto> getProductos(){
-         
-     DefaultTableModel tabla = new DefaultTableModel() {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            // Retorna false para que ninguna celda sea editable
-            return false;
-        }
-    };
-       
-        productos = productoDao.getProductos();
-        
+      // Instancia del DAO de inventarios
+    InventarioDao inventarioDao = new InventarioDao();
+
+    // Método para cargar los productos y su stock en la tabla
+    public void cargarInventario() {
+        DefaultTableModel tabla = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Retorna false para que ninguna celda sea editable
+                return false;
+            }
+        };
+
+        tabla.addColumn("Id Producto");
         tabla.addColumn("Nombre Producto");
         tabla.addColumn("Stock");
-        
-        for (ModeloProducto producto : productos){
-            
+
+        // Aquí deberías tener acceso a los productos, por ejemplo desde ProductoDao
+        ProductoDao productoDao = new ProductoDao();
+        List<ModeloProducto> productos = productoDao.getProductos();
+
+        // Iterar sobre los productos para llenar la tabla
+        for (ModeloProducto producto : productos) {
+            // Obtener el stock actual del producto desde InventarioDao
+            int stockActual = inventarioDao.getStock(producto.getIdProducto());
+
+            // Añadir una fila a la tabla con el ID, nombre del producto y el stock actual
             tabla.addRow(new Object[]{
-            producto.getNombreProducto()
-                    
-            
-        });
+                producto.getIdProducto(),
+                producto.getNombreProducto(),
+                stockActual // Mostrar el stock actual
+            });
         }
+
+        // Asignar el modelo de tabla a la tabla de la vista
         tblInventario.setModel(tabla);
-        return productos;
-     }
+    }
+
+    // Método para actualizar el stock de un producto en la base de datos
+    public void actualizarStock(int productoId, int cantidadSumar) {
+        // Obtener el stock actual
+        int stockActual = inventarioDao.getStock(productoId);
+
+        // Sumar la cantidad que se desea agregar
+        int nuevoStock = stockActual + cantidadSumar;
+        
+        String motivo = "Rebastecimiento";
+
+        // Actualizar el stock en la base de datos
+        inventarioDao.registrarModificacionInventario(productoId, cantidadSumar, motivo);
+
+        // Refrescar la tabla después de la actualización
+        cargarInventario();
+    }
+     
+     private void seleccionarDatosTabla(){
+         
+        int fila = tblInventario.getSelectedRow();
+    if (fila >= 0) {
+        // Asignar datos de la fila seleccionada a los campos de texto
+        txtNombreProducto.setText(tblInventario.getValueAt(fila, 1).toString()); // Nombre del producto
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -72,15 +106,20 @@ ProductoDao productoDao = new ProductoDao();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblInventario = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
-        txtCodigoProducto1 = new javax.swing.JTextField();
+        txtNombreProducto = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnRegistarMod.setText("Modificar");
+        btnRegistarMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistarModActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
 
-        jLabel1.setText("Cantidad:");
+        jLabel1.setText("Cantidad a agregar:");
 
         jLabel2.setText("Código Producto:");
 
@@ -101,6 +140,11 @@ ProductoDao productoDao = new ProductoDao();
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblInventario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblInventarioMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblInventario);
 
         jButton1.setText("Regresar al Menu ");
@@ -126,14 +170,14 @@ ProductoDao productoDao = new ProductoDao();
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(103, 103, 103)
-                                        .addComponent(txtCodigoProducto1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addGap(97, 97, 97)
                                         .addComponent(txtCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(208, 208, 208)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -149,7 +193,7 @@ ProductoDao productoDao = new ProductoDao();
                 .addGap(105, 105, 105)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtCodigoProducto1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(78, 78, 78)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -181,6 +225,35 @@ ProductoDao productoDao = new ProductoDao();
         this.setVisible(false);
         menu.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tblInventarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblInventarioMouseClicked
+
+    seleccionarDatosTabla();        // TODO add your handling code here:
+    }//GEN-LAST:event_tblInventarioMouseClicked
+
+    private void btnRegistarModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistarModActionPerformed
+        // TODO add your handling code here:
+       int fila = tblInventario.getSelectedRow();
+    if (fila >= 0) {
+        int productoId = (int) tblInventario.getValueAt(fila, 0); // ID del producto
+        // Obtener la cantidad a sumar del campo de texto
+        int cantidadSumar;
+        try {
+            cantidadSumar = Integer.parseInt(txtCantidadProducto.getText()); // Convertir a entero
+            // Llamar al método agregarStock del DAO para actualizar el stock
+            inventarioDao.agregarStock(productoId, cantidadSumar, "Rebastecimiento");
+            // Refrescar la tabla después de la actualización
+            cargarInventario();
+        } catch (NumberFormatException e) {
+            // Manejar el error si la cantidad no es un número válido
+            javax.swing.JOptionPane.showMessageDialog(this, "Ingrese una cantidad válida", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Seleccione un producto para modificar el stock", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+    }
+
+
+    }//GEN-LAST:event_btnRegistarModActionPerformed
 
     /**
      * @param args the command line arguments
@@ -226,6 +299,6 @@ ProductoDao productoDao = new ProductoDao();
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblInventario;
     private javax.swing.JTextField txtCantidadProducto;
-    private javax.swing.JTextField txtCodigoProducto1;
+    private javax.swing.JTextField txtNombreProducto;
     // End of variables declaration//GEN-END:variables
 }
