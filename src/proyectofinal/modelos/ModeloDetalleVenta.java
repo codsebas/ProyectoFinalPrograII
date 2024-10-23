@@ -12,7 +12,7 @@ public class ModeloDetalleVenta {
     private int numFactura;
     private int numLinea;
     private int productoId;
-    private int cantidadProducto;
+    private int cantidadProducto;   
     private double  precioUnitario;
     private double totalLinea;
     VistaVentas vista;
