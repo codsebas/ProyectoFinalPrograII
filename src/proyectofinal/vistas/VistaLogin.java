@@ -26,6 +26,8 @@ public class VistaLogin extends javax.swing.JFrame {
          setLocationRelativeTo(null);
          controladorUsuario = new ControladorUsuario();
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -28,32 +28,32 @@ public class ProductoDao {
 
     public List<ModeloProducto> getProductos() {
         List<ModeloProducto> productos = new ArrayList<>();
-        String sql = "SELECT p.id_producto, p.nombre_producto, p.descripcion, p.precio_normal, p.precio_promocion, p.categoria_id, c.descripcion_categoria "
-                + "FROM productos p JOIN categoria_productos c ON p.categoria_id = c.id_categoria";
+         String sql = "SELECT p.id_producto, p.nombre_producto, p.descripcion, p.precio_normal, p.precio_promocion, "
+                 + "p.categoria_id, c.descripcion_categoria, p.ruta_imagen_producto "
+                 + "FROM productos p JOIN categoria_productos c ON p.categoria_id = c.id_categoria";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+    try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                int idProducto = rs.getInt("id_producto");
-                String nombreProducto = rs.getString("nombre_producto");
-                String descripcion = rs.getString("descripcion"); // Asegúrate de que la descripción se obtenga correctamente
-                int idCategoria = rs.getInt("categoria_id"); // Obtener el ID de la categoría
-                String descripcionCategoria = rs.getString("descripcion_categoria");
-                double precioNormalProducto = rs.getDouble("precio_normal");
-                double precioPromocion = rs.getDouble("precio_promocion");
+        while (rs.next()) {
+            int idProducto = rs.getInt("id_producto");
+            String nombreProducto = rs.getString("nombre_producto");
+            String descripcion = rs.getString("descripcion");
+            int idCategoria = rs.getInt("categoria_id");
+            String descripcionCategoria = rs.getString("descripcion_categoria");
+            double precioNormalProducto = rs.getDouble("precio_normal");
+            double precioPromocion = rs.getDouble("precio_promocion");
+            String rutaImagen = rs.getString("ruta_imagen_producto"); // Asegúrate de incluir esta línea
 
-                ModeloProducto producto = new ModeloProducto(idProducto, nombreProducto, descripcion, idCategoria,
-                        descripcionCategoria, precioNormalProducto,
-                        precioPromocion, null, null);
-                productos.add(producto);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error getProductos: " + e.getMessage());
+            ModeloProducto producto = new ModeloProducto(idProducto, nombreProducto, descripcion, idCategoria,
+                    descripcionCategoria, precioNormalProducto, precioPromocion, rutaImagen, null); // Asignar la ruta de la imagen
+            productos.add(producto);
         }
-
-        return productos;
+    } catch (SQLException e) {
+        System.out.println("Error getProductos: " + e.getMessage());
     }
 
+    return productos;
+}
     // Agregar un nuevo producto
     public void addProducto(String nombreProducto, int idCategoria, double precioNormal, double precioPromocion,
                         String descripcion, String rutaImagen) {
@@ -116,23 +116,26 @@ String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_norma
     }
 
     // Actualizar un producto
-    public void updateProducto(int pIdProducto, String pNombreProducto, int pIdCategoria, double pPrecioNormal,
-            double pPrecioPromocion, String pDescripcion) {
-        String sql = "UPDATE productos SET nombre_producto = ?, categoria_id = ?, precio_normal = ?, precio_promocion = ?, descripcion = ? WHERE id_producto = ?";
+    public void updateProducto(int pIdProducto, String pNombreProducto, int pIdCategoria, 
+                           double pPrecioNormal, double pPrecioPromocion, String pDescripcion, 
+                           String pRutaImagen) {
+    String sql = "UPDATE productos SET nombre_producto = ?, categoria_id = ?, precio_normal = ?, "
+               + "precio_promocion = ?, descripcion = ?, ruta_imagen_producto = ? WHERE id_producto = ?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, pNombreProducto);
-            stmt.setInt(2, pIdCategoria);
-            stmt.setDouble(3, pPrecioNormal);
-            stmt.setDouble(4, pPrecioPromocion);
-            stmt.setString(5, pDescripcion);
-            stmt.setInt(6, pIdProducto);
-            stmt.executeUpdate();
-            System.out.println("PRODUCTO ACTUALIZADO");
-        } catch (SQLException e) {
-            System.out.println("Error updateProducto: " + e.getMessage());
-        }
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, pNombreProducto);
+        stmt.setInt(2, pIdCategoria);
+        stmt.setDouble(3, pPrecioNormal);
+        stmt.setDouble(4, pPrecioPromocion);
+        stmt.setString(5, pDescripcion);
+        stmt.setString(6, pRutaImagen); // Actualizar la ruta de la imagen
+        stmt.setInt(7, pIdProducto);
+        stmt.executeUpdate();
+        System.out.println("PRODUCTO ACTUALIZADO");
+    } catch (SQLException e) {
+        System.out.println("Error updateProducto: " + e.getMessage());
     }
+}
 
     // Eliminar un producto
     public void deleteProducto(int pIdProducto) {

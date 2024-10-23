@@ -58,6 +58,11 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnVistaInventario.setText("GESTIÓN DE INVENTARIO");
+        btnVistaInventario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVistaInventarioActionPerformed(evt);
+            }
+        });
 
         btnVistaProductos.setText("GESTIÓN DE PRODUCTOS");
         btnVistaProductos.addActionListener(new java.awt.event.ActionListener() {
@@ -176,6 +181,15 @@ public class VistaMenu extends javax.swing.JFrame {
         this.setVisible(false);
         vistap.setVisible(true);
     }//GEN-LAST:event_btnVistaProductosActionPerformed
+
+    private void btnVistaInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVistaInventarioActionPerformed
+        // TODO add your handling code here:
+        
+        VistaInventario vistai = new VistaInventario();
+        this.setVisible(false);
+        vistai.setVisible(true);
+                
+    }//GEN-LAST:event_btnVistaInventarioActionPerformed
 
     /**
      * @param args the command line arguments
