@@ -33,7 +33,7 @@ public class VentasImp implements IVentas {
     public boolean insertarVenta(ModeloVenta modelo) {
         boolean resultado = true;
         conector.conectar();
-        ps = conector.preparar(sql.getINSERTAR_VENTA());
+        ps = conector.preparar(sql.getINSERTAR_VENTA(), PreparedStatement.RETURN_GENERATED_KEYS);
 
         try {
             ps.setString(1, modelo.getUsuario());
@@ -43,7 +43,16 @@ public class VentasImp implements IVentas {
             ps.setDouble(5, modelo.getCargoTarjeta());
             ps.setDouble(6, modelo.getTotalVenta());
             ps.setString(7, modelo.getMetodoPago());
+            
+            int filasInsertadas = ps.executeUpdate();
+            if(filasInsertadas > 0){
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()){
+                    no_factura = rs.getInt(1);
+                }
+            }
             return ps.execute();
+            
         } catch (SQLException ex) {
             conector.mensaje("Error en la insersción", "Error", 1);
             return resultado;
@@ -80,7 +89,7 @@ public class VentasImp implements IVentas {
             ps.setDouble(7, modelo.getCargoTarjeta());
             ps.setDouble(8, modelo.getTotalVenta());
             ps.setString(9, modelo.getMetodoPago());
-            resultado = ps.execute();
+            return ps.execute();
         } catch (SQLException ex) {
             conector.mensaje(ex.getMessage(), "Error al actualizar", 1);
         }

@@ -4,6 +4,7 @@
  */
 package proyectofinal.interfaces;
 
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import proyectofinal.modelos.ModeloDetalleVenta;
 
@@ -12,11 +13,8 @@ import proyectofinal.modelos.ModeloDetalleVenta;
  * @author sebas
  */
 public interface IDetalleVentas {
-    public boolean insertarDetalleVenta(ModeloDetalleVenta modelo);
+    public boolean insertarDetalleVenta(List<ModeloDetalleVenta> modelo);
     public boolean eliminarDetalleVenta(int  factura);
-    public boolean actualizarDetalleVEnta(ModeloDetalleVenta modelo);
     public DefaultTableModel modeloDetalleVenta();
-    public DefaultTableModel modeloDetalleVenta(int factura);
-    public ModeloDetalleVenta mostrarDetalleVenta(int factura);
     
 }
