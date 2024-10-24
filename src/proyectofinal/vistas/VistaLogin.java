@@ -7,6 +7,7 @@ package proyectofinal.vistas;
 import javax.swing.JOptionPane;
 import proyectofinal.controlador.ControladorUsuario;
 import proyectofinal.modelos.ModeloUsuario;
+import proyectofinal.modelos.UsuarioActual;
 import proyectofinal.sql.Conector;
 
 /**
@@ -26,6 +27,8 @@ public class VistaLogin extends javax.swing.JFrame {
          setLocationRelativeTo(null);
          controladorUsuario = new ControladorUsuario();
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -178,7 +181,8 @@ public class VistaLogin extends javax.swing.JFrame {
     ModeloUsuario user = controladorUsuario.validarUsuario(usuario, password);
     
     if (user != null) {
-    
+    UsuarioActual.usuarioActual = usuario;
+        
     System.out.println("Rol del usuario: " + user.getRol());
     
    

@@ -38,7 +38,7 @@ public class VistaClientes extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtBuscarNit = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -72,13 +72,13 @@ public class VistaClientes extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnBuscar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelar)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 395, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtBuscarNit, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)))
+                        .addComponent(txtBuscarNit)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -91,7 +91,7 @@ public class VistaClientes extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBuscar)
-                    .addComponent(btnCancelar))
+                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
@@ -272,9 +272,9 @@ public class VistaClientes extends javax.swing.JFrame {
         btnEliminar.addActionListener(controlador);
         btnGuardar.addActionListener(controlador);
         btnBuscar.addActionListener(controlador);
+        btnCancelar.addActionListener(controlador);
         btnLimpiar.addActionListener(controlador);
         btnRegresar.addActionListener(controlador);
-        btnCancelar.addActionListener(controlador);
         tblClientes.addMouseListener(controlador);
         this.addWindowListener(controlador);
     }
@@ -282,7 +282,7 @@ public class VistaClientes extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnActualizar;
     public javax.swing.JButton btnBuscar;
-    public javax.swing.JButton btnCancelar;
+    public javax.swing.JTextField btnCancelar;
     public javax.swing.JButton btnEliminar;
     public javax.swing.JButton btnGuardar;
     public javax.swing.JButton btnLimpiar;

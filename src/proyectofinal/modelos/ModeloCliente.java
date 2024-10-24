@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package proyectofinal.modelos;
-
 import proyectofinal.vistas.VistaClientes;
 
 /**
@@ -11,13 +10,10 @@ import proyectofinal.vistas.VistaClientes;
  * @author gerso
  */
 public class ModeloCliente {
-
+    
     private String NIT;
     private String nombre;
     VistaClientes vista;
-
-    public ModeloCliente() {
-    }
 
     public ModeloCliente(VistaClientes vista) {
         this.vista = vista;
@@ -51,5 +47,13 @@ public class ModeloCliente {
     public void setVista(VistaClientes vista) {
         this.vista = vista;
     }
+    
+    
 
+    
+    
+    
+    
 }
+
+

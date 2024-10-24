@@ -4,6 +4,13 @@
  */
 package proyectofinal.vistas;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import proyectofinal.dao.InventarioDao;
+import proyectofinal.dao.ProductoDao;
+import proyectofinal.modelos.ModeloProducto;
+
 /**
  *
  * @author gerso
@@ -17,8 +24,73 @@ public class VistaInventario extends javax.swing.JFrame {
         initComponents();
         setTitle("Inventario");
          setLocationRelativeTo(null);
+         cargarInventario();
+    }
+      // Instancia del DAO de inventarios
+    InventarioDao inventarioDao = new InventarioDao();
+
+    // Método para cargar los productos y su stock en la tabla
+    public void cargarInventario() {
+        DefaultTableModel tabla = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Retorna false para que ninguna celda sea editable
+                return false;
+            }
+        };
+
+        tabla.addColumn("Id Producto");
+        tabla.addColumn("Nombre Producto");
+        tabla.addColumn("Stock");
+
+        // Aquí deberías tener acceso a los productos, por ejemplo desde ProductoDao
+        ProductoDao productoDao = new ProductoDao();
+        List<ModeloProducto> productos = productoDao.getProductos();
+
+        // Iterar sobre los productos para llenar la tabla
+        for (ModeloProducto producto : productos) {
+            // Obtener el stock actual del producto desde InventarioDao
+            int stockActual = inventarioDao.getStock(producto.getIdProducto());
+
+            // Añadir una fila a la tabla con el ID, nombre del producto y el stock actual
+            tabla.addRow(new Object[]{
+                producto.getIdProducto(),
+                producto.getNombreProducto(),
+                stockActual // Mostrar el stock actual
+            });
+        }
+
+        // Asignar el modelo de tabla a la tabla de la vista
+        tblInventario.setModel(tabla);
     }
 
+    // Método para actualizar el stock de un producto en la base de datos
+    
+     public void actualizarStock(int productoId, int cantidadSumar) {
+        // Obtener el stock actual
+        int stockActual = inventarioDao.getStock(productoId);
+
+        // Sumar la cantidad que se desea agregar
+        int nuevoStock = stockActual + cantidadSumar;
+        
+        String motivo = "Rebastecimiento";
+
+        // Actualizar el stock en la base de datos
+        inventarioDao.registrarModificacionInventario(productoId, cantidadSumar, motivo);
+
+        // Refrescar la tabla después de la actualización
+        cargarInventario();
+    }
+     
+     
+     private void seleccionarDatosTabla(){
+         
+        int fila = tblInventario.getSelectedRow();
+    if (fila >= 0) {
+        // Asignar datos de la fila seleccionada a los campos de texto
+        txtNombreProducto.setText(tblInventario.getValueAt(fila, 1).toString()); // Nombre del producto
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,23 +100,28 @@ public class VistaInventario extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnAgregarStock = new javax.swing.JButton();
-        btnQuitarStock = new javax.swing.JButton();
-        btnBuscarProducto = new javax.swing.JButton();
+        btnRegistarMod = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtCodigoProducto = new javax.swing.JTextField();
         txtCantidadProducto = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblInventario = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        txtNombreProducto = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        btnAgregarStock.setText("Agregar");
+        btnRegistarMod.setText("Modificar");
+        btnRegistarMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistarModActionPerformed(evt);
+            }
+        });
 
-        btnQuitarStock.setText("Quitar");
+        btnCancelar.setText("Cancelar");
 
-        btnBuscarProducto.setText("Buscar");
-
-        jLabel1.setText("Cantidad:");
+        jLabel1.setText("Cantidad a agregar:");
 
         jLabel2.setText("Código Producto:");
 
@@ -54,47 +131,86 @@ public class VistaInventario extends javax.swing.JFrame {
             }
         });
 
+        tblInventario.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblInventario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblInventarioMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tblInventario);
+
+        jButton1.setText("Regresar al Menu ");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(79, 79, 79)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnBuscarProducto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 158, Short.MAX_VALUE)
-                        .addComponent(btnAgregarStock)
-                        .addGap(63, 63, 63)
-                        .addComponent(btnQuitarStock)
-                        .addGap(103, 103, 103))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(104, 104, 104)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtCodigoProducto)
-                            .addComponent(txtCantidadProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(57, 57, 57)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(103, 103, 103)
+                                        .addComponent(txtNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGap(97, 97, 97)
+                                        .addComponent(txtCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(208, 208, 208)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addComponent(btnRegistarMod, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(230, 230, 230)))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(113, Short.MAX_VALUE)
+                .addGap(105, 105, 105)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
+                    .addComponent(txtNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(78, 78, 78)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(73, 73, 73)
+                    .addComponent(txtCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(71, 71, 71)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnQuitarStock)
-                    .addComponent(btnAgregarStock)
-                    .addComponent(btnBuscarProducto))
-                .addGap(107, 107, 107))
+                    .addComponent(btnRegistarMod, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(183, 183, 183)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(68, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 579, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -103,6 +219,43 @@ public class VistaInventario extends javax.swing.JFrame {
     private void txtCantidadProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadProductoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadProductoActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+        VistaMenu menu = new VistaMenu("supervisor");
+        this.setVisible(false);
+        menu.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tblInventarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblInventarioMouseClicked
+
+    seleccionarDatosTabla();        // TODO add your handling code here:
+    }//GEN-LAST:event_tblInventarioMouseClicked
+
+    private void btnRegistarModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistarModActionPerformed
+        // TODO add your handling code here:
+     int fila = tblInventario.getSelectedRow();
+    if (fila >= 0) {
+        int productoId = (int) tblInventario.getValueAt(fila, 0); // ID del producto
+        // Obtener la cantidad a sumar del campo de texto
+        int cantidadSumar;
+        try {
+            cantidadSumar = Integer.parseInt(txtCantidadProducto.getText()); // Convertir a entero
+            // Llamar al método agregarStock del DAO para actualizar el stock
+            inventarioDao.agregarStock(productoId, cantidadSumar, "Rebastecimiento");
+            // Refrescar la tabla después de la actualización
+            cargarInventario();
+        } catch (NumberFormatException e) {
+            // Manejar el error si la cantidad no es un número válido
+            javax.swing.JOptionPane.showMessageDialog(this, "Ingrese una cantidad válida", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Seleccione un producto para modificar el stock", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+    }
+
+
+    }//GEN-LAST:event_btnRegistarModActionPerformed
 
     /**
      * @param args the command line arguments
@@ -140,12 +293,14 @@ public class VistaInventario extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregarStock;
-    private javax.swing.JButton btnBuscarProducto;
-    private javax.swing.JButton btnQuitarStock;
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnRegistarMod;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tblInventario;
     private javax.swing.JTextField txtCantidadProducto;
-    private javax.swing.JTextField txtCodigoProducto;
+    private javax.swing.JTextField txtNombreProducto;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,70 +10,118 @@ package proyectofinal.modelos;
  */
 
 public class ModeloProducto {
+  
     
     private int idProducto;
-    private int categoriaId;
     private String nombreProducto;
-    private double precioNormal;
+    private String descripcionProducto;
+    private int idCategoria;
+    private String descripcionCategoria;
+    private double precioNormalProducto;
     private double precioPromocion;
-    private String descripcion;
-    private String rutaImagenProducto;
-    private String rutaImagenCodigoBarras;
+    private String rutaImagen;
+    private String rutaCodigoBarras;
 
-    // Getters y setters para cada campo
+    public ModeloProducto() {
+        
+    }
+
+    public ModeloProducto(String nombreProducto, String descripcionProducto, int idCategoria, String descripcionCategoria, double precioNormalProducto, double precioPromocion, String rutaImagen, String rutaCodigoBarras) {
+        this.nombreProducto = nombreProducto;
+        this.descripcionProducto = descripcionProducto;
+        this.idCategoria = idCategoria;
+        this.descripcionCategoria = descripcionCategoria;
+        this.precioNormalProducto = precioNormalProducto;
+        this.precioPromocion = precioPromocion;
+        this.rutaImagen = rutaImagen;
+        this.rutaCodigoBarras = rutaCodigoBarras;
+    }
+
+    public ModeloProducto(int idProducto, String nombreProducto, String descripcionProducto, int idCategoria, String descripcionCategoria, double precioNormalProducto, double precioPromocion, String rutaImagen, String rutaCodigoBarras) {
+        this.idProducto = idProducto;
+        this.nombreProducto = nombreProducto;
+        this.descripcionProducto = descripcionProducto;
+        this.idCategoria = idCategoria;
+        this.descripcionCategoria = descripcionCategoria;
+        this.precioNormalProducto = precioNormalProducto;
+        this.precioPromocion = precioPromocion;
+        this.rutaImagen = rutaImagen;
+        this.rutaCodigoBarras = rutaCodigoBarras;
+    }
+
     public int getIdProducto() {
         return idProducto;
     }
+
     public void setIdProducto(int idProducto) {
         this.idProducto = idProducto;
-    }
-
-    public int getCategoriaId() {
-        return categoriaId;
-    }
-    public void setCategoriaId(int categoriaId) {
-        this.categoriaId = categoriaId;
     }
 
     public String getNombreProducto() {
         return nombreProducto;
     }
+
     public void setNombreProducto(String nombreProducto) {
         this.nombreProducto = nombreProducto;
     }
 
-    public double getPrecioNormal() {
-        return precioNormal;
+    public String getDescripcionProducto() {
+        return descripcionProducto;
     }
-    public void setPrecioNormal(double precioNormal) {
-        this.precioNormal = precioNormal;
+
+    public void setDescripcionProducto(String descripcionProducto) {
+        this.descripcionProducto = descripcionProducto;
+    }
+
+    public int getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(int idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public String getDescripcionCategoria() {
+        return descripcionCategoria;
+    }
+
+    public void setDescripcionCategoria(String descripcionCategoria) {
+        this.descripcionCategoria = descripcionCategoria;
+    }
+
+    public double getPrecioNormalProducto() {
+        return precioNormalProducto;
+    }
+
+    public void setPrecioNormalProducto(double precioNormalProducto) {
+        this.precioNormalProducto = precioNormalProducto;
     }
 
     public double getPrecioPromocion() {
         return precioPromocion;
     }
+
     public void setPrecioPromocion(double precioPromocion) {
         this.precioPromocion = precioPromocion;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public String getRutaImagen() {
+        return rutaImagen;
     }
 
-    public String getRutaImagenProducto() {
-        return rutaImagenProducto;
-    }
-    public void setRutaImagenProducto(String rutaImagenProducto) {
-        this.rutaImagenProducto = rutaImagenProducto;
+    public void setRutaImagen(String rutaImagen) {
+        this.rutaImagen = rutaImagen;
     }
 
-    public String getRutaImagenCodigoBarras() {
-        return rutaImagenCodigoBarras;
+    public String getRutaCodigoBarras() {
+        return rutaCodigoBarras;
     }
-    public void setRutaImagenCodigoBarras(String rutaImagenCodigoBarras) {
-        this.rutaImagenCodigoBarras = rutaImagenCodigoBarras;
+
+    public void setRutaCodigoBarras(String rutaCodigoBarras) {
+        this.rutaCodigoBarras = rutaCodigoBarras;
     }
+
+    
+    
+    
 }
