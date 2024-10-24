@@ -13,7 +13,7 @@ import proyectofinal.modelos.ModeloVenta;
  * @author sebas
  */
 public interface IVentas {
-    public boolean insertarVenta(ModeloVenta modelo);
+    public int insertarVenta(ModeloVenta modelo);
     public boolean eliminarVenta(int factura);
     public boolean actualizarVenta(ModeloVenta modelo);
     public DefaultTableModel modeloVenta();

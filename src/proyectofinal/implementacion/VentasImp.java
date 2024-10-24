@@ -20,22 +20,22 @@ import proyectofinal.sql.QuerysClientes;
  *
  * @author sebas
  */
-public class VentasImp implements IVentas {
+public class VentasImp implements IVentas{
 
     Conector conector = new Conector();
     QuerysVentas sql = new QuerysVentas();
     QuerysClientes sqlCli = new QuerysClientes();
     PreparedStatement ps;
     ResultSet rs;
-    public static int no_factura;
 
     @Override
-    public boolean insertarVenta(ModeloVenta modelo) {
-        boolean resultado = true;
-        conector.conectar();
+    public int insertarVenta(ModeloVenta modelo) {
+        int resultado = 0;
+        conector.conectar(); // Conectar a la base de datos
         ps = conector.preparar(sql.getINSERTAR_VENTA(), PreparedStatement.RETURN_GENERATED_KEYS);
 
         try {
+            // Insertar la venta principal
             ps.setString(1, modelo.getUsuario());
             ps.setString(2, modelo.getNitCliente());
             ps.setDouble(3, modelo.getTotalSinImpuestos());
@@ -43,19 +43,22 @@ public class VentasImp implements IVentas {
             ps.setDouble(5, modelo.getCargoTarjeta());
             ps.setDouble(6, modelo.getTotalVenta());
             ps.setString(7, modelo.getMetodoPago());
-            
+
             int filasInsertadas = ps.executeUpdate();
-            if(filasInsertadas > 0){
-                ResultSet rs = ps.getGeneratedKeys();
-                if(rs.next()){
-                    no_factura = rs.getInt(1);
+            if (filasInsertadas > 0) {
+                ResultSet res = ps.getGeneratedKeys();
+                if(res.next()){
+                    resultado = res.getInt(1);
                 }
             }
-            return ps.execute();
-            
-        } catch (SQLException ex) {
-            conector.mensaje("Error en la insersción", "Error", 1);
             return resultado;
+
+        } catch (SQLException ex) {
+            conector.mensaje("Error en la inserción de venta", "Error", 1);
+            System.out.println(ex.getMessage());
+            return 0; // Si hay error, devolver 0
+        } finally {
+            conector.desconectar(); // Desconectar la base de datos
         }
     }
 
@@ -83,12 +86,11 @@ public class VentasImp implements IVentas {
             ps.setInt(1, modelo.getNumeroFactura());
             ps.setString(2, modelo.getUsuario());
             ps.setString(3, modelo.getNitCliente());
-            ps.setTimestamp(4, modelo.getFechaVenta());
-            ps.setDouble(5, modelo.getTotalSinImpuestos());
-            ps.setDouble(6, modelo.getTotalImpuestos());
-            ps.setDouble(7, modelo.getCargoTarjeta());
-            ps.setDouble(8, modelo.getTotalVenta());
-            ps.setString(9, modelo.getMetodoPago());
+            ps.setDouble(4, modelo.getTotalSinImpuestos());
+            ps.setDouble(5, modelo.getTotalImpuestos());
+            ps.setDouble(6, modelo.getCargoTarjeta());
+            ps.setDouble(7, modelo.getTotalVenta());
+            ps.setString(8, modelo.getMetodoPago());
             return ps.execute();
         } catch (SQLException ex) {
             conector.mensaje(ex.getMessage(), "Error al actualizar", 1);
@@ -99,11 +101,11 @@ public class VentasImp implements IVentas {
     @Override
     public DefaultTableModel modeloVenta() {
         DefaultTableModel modelo = new DefaultTableModel() {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; 
-        }
-    };
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         modelo.setColumnIdentifiers(new Object[]{"Factura", "Nit", "Fecha", "Total Venta"});
         conector.conectar();
 
@@ -150,12 +152,11 @@ public class VentasImp implements IVentas {
                 modelo.setNumeroFactura(rs.getInt(1));
                 modelo.setUsuario(rs.getString(2));
                 modelo.setNitCliente(rs.getString(3));
-                modelo.setFechaVenta(rs.getTimestamp(4));
-                modelo.setTotalSinImpuestos(rs.getDouble(5));
-                modelo.setTotalImpuestos(rs.getDouble(6));
-                modelo.setCargoTarjeta(rs.getDouble(7));
-                modelo.setTotalVenta(rs.getDouble(8));
-                modelo.setMetodoPago(rs.getString(9));
+                modelo.setTotalSinImpuestos(rs.getDouble(4));
+                modelo.setTotalImpuestos(rs.getDouble(5));
+                modelo.setCargoTarjeta(rs.getDouble(6));
+                modelo.setTotalVenta(rs.getDouble(7));
+                modelo.setMetodoPago(rs.getString(8));
             }
             conector.desconectar();
 
