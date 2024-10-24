@@ -4,10 +4,19 @@
  */
 package proyectofinal.dao;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.Code128Writer;
+import com.google.zxing.qrcode.QRCodeWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,45 +37,45 @@ public class ProductoDao {
 
     public List<ModeloProducto> getProductos() {
         List<ModeloProducto> productos = new ArrayList<>();
-         String sql = "SELECT p.id_producto, p.nombre_producto, p.descripcion, p.precio_normal, p.precio_promocion, "
-                 + "p.categoria_id, c.descripcion_categoria, p.ruta_imagen_producto "
-                 + "FROM productos p JOIN categoria_productos c ON p.categoria_id = c.id_categoria";
+        String sql = "SELECT p.id_producto, p.nombre_producto, p.descripcion, p.precio_normal, p.precio_promocion, "
+                + "p.categoria_id, c.descripcion_categoria, p.ruta_imagen_producto "
+                + "FROM productos p JOIN categoria_productos c ON p.categoria_id = c.id_categoria";
 
-    try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
-        while (rs.next()) {
-            int idProducto = rs.getInt("id_producto");
-            String nombreProducto = rs.getString("nombre_producto");
-            String descripcion = rs.getString("descripcion");
-            int idCategoria = rs.getInt("categoria_id");
-            String descripcionCategoria = rs.getString("descripcion_categoria");
-            double precioNormalProducto = rs.getDouble("precio_normal");
-            double precioPromocion = rs.getDouble("precio_promocion");
-            String rutaImagen = rs.getString("ruta_imagen_producto"); // Asegúrate de incluir esta línea
+            while (rs.next()) {
+                int idProducto = rs.getInt("id_producto");
+                String nombreProducto = rs.getString("nombre_producto");
+                String descripcion = rs.getString("descripcion");
+                int idCategoria = rs.getInt("categoria_id");
+                String descripcionCategoria = rs.getString("descripcion_categoria");
+                double precioNormalProducto = rs.getDouble("precio_normal");
+                double precioPromocion = rs.getDouble("precio_promocion");
+                String rutaImagen = rs.getString("ruta_imagen_producto"); // Asegúrate de incluir esta línea
 
-            ModeloProducto producto = new ModeloProducto(idProducto, nombreProducto, descripcion, idCategoria,
-                    descripcionCategoria, precioNormalProducto, precioPromocion, rutaImagen, null); // Asignar la ruta de la imagen
-            productos.add(producto);
+                ModeloProducto producto = new ModeloProducto(idProducto, nombreProducto, descripcion, idCategoria,
+                        descripcionCategoria, precioNormalProducto, precioPromocion, rutaImagen, null); // Asignar la ruta de la imagen
+                productos.add(producto);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getProductos: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("Error getProductos: " + e.getMessage());
+
+        return productos;
     }
 
-    return productos;
-}
     // Agregar un nuevo producto
-    public void addProducto(String nombreProducto, int idCategoria, double precioNormal, double precioPromocion,
+   public void addProducto(String nombreProducto, int idCategoria, double precioNormal, double precioPromocion,
                         String descripcion, String rutaImagen) {
     
 String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_normal, precio_promocion, descripcion, ruta_imagen_producto) VALUES (?, ?, ?, ?, ?, ?)";
-
-    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+    
+    try (PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
         stmt.setString(1, nombreProducto);
         stmt.setInt(2, idCategoria);
         stmt.setDouble(3, precioNormal);
         stmt.setDouble(4, precioPromocion);
         stmt.setString(5, descripcion);
-        
         
         if (rutaImagen != null && !rutaImagen.isEmpty()) {
             stmt.setString(6, rutaImagen); 
@@ -78,15 +87,76 @@ String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_norma
         System.out.println("Filas afectadas: " + filasAfectadas);
         if (filasAfectadas > 0) {
             System.out.println("PRODUCTO AGREGADO");
-        } else {
-            System.out.println("No se insertó ningún producto.");
+            
+            // Obtener el ID generado para el nuevo producto
+                ResultSet generatedKeys = stmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int idProducto = generatedKeys.getInt(1);
+
+                    // Generar el código de barras
+                    String barcodeFilePath = "C:\\Users\\gerso\\Downloads\\Codigos de Barras\\" + nombreProducto + "_" + idProducto + ".png";
+                    try {
+                        generarCodigoBarras(String.valueOf(idProducto), barcodeFilePath);
+                        System.out.println("Código de barras generado en: " + barcodeFilePath);
+
+                        // Almacenar la imagen del código de barras en la base de datos
+                        String updateSql = "UPDATE productos SET ruta_imagen_codigo_barras = ? WHERE id_producto = ?";
+                        try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                            FileInputStream barcodeFis = new FileInputStream(barcodeFilePath);
+                            updateStmt.setBinaryStream(1, barcodeFis, barcodeFis.available());
+                            updateStmt.setInt(2, idProducto);
+                            updateStmt.executeUpdate();
+                            System.out.println("Código de barras almacenado en la base de datos.");
+                        } catch (IOException e) {
+                            System.out.println("Error al leer el archivo del código de barras: " + e.getMessage());
+                        }
+
+                        // Llamar al método para agregar stock en la tabla de inventarios
+                        agregarStockInicial(idProducto);
+
+                    } catch (Exception e) {
+                        System.out.println("Error al generar el código de barras: " + e.getMessage());
+                    }
+                }
+            } else {
+                System.out.println("No se insertó ningún producto.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error addProducto: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("Error addProducto: " + e.getMessage());
     }
-}
-    
-    
+   
+   public static void generarCodigoBarras(String texto, String rutaArchivo) {
+        try {
+            // Parámetros para el código de barras (tipo CODE_128)
+            BitMatrix matrix = new MultiFormatWriter().encode(texto, BarcodeFormat.CODE_128, 300, 150);
+
+            // La ruta donde se va a guardar la imagen
+            Path ruta = FileSystems.getDefault().getPath(rutaArchivo);
+
+            // Guardar la imagen
+            MatrixToImageWriter.writeToPath(matrix, "png", ruta);
+            System.out.println("Código de barras generado en: " + rutaArchivo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void agregarStockInicial(int productoId) {
+        String sqlInsertInventario = "INSERT INTO inventarios (producto_id, stock_producto) VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sqlInsertInventario)) {
+            stmt.setInt(1, productoId);
+            stmt.setInt(2, 1); // Establecer el stock inicial en 1
+            stmt.executeUpdate();
+            System.out.println("Stock inicial agregado para el producto ID: " + productoId);
+        } catch (SQLException e) {
+            System.out.println("Error al agregar stock inicial: " + e.getMessage());
+        }
+    }
+
+   
+
+
     public ModeloProducto getOneProducto(int pIdProducto) {
         ModeloProducto producto = null;
         String sql = "SELECT p.id_producto, p.nombre_producto, p.descripcion, p.precio_normal, p.precio_promocion, "
@@ -116,26 +186,26 @@ String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_norma
     }
 
     // Actualizar un producto
-    public void updateProducto(int pIdProducto, String pNombreProducto, int pIdCategoria, 
-                           double pPrecioNormal, double pPrecioPromocion, String pDescripcion, 
-                           String pRutaImagen) {
-    String sql = "UPDATE productos SET nombre_producto = ?, categoria_id = ?, precio_normal = ?, "
-               + "precio_promocion = ?, descripcion = ?, ruta_imagen_producto = ? WHERE id_producto = ?";
+    public void updateProducto(int pIdProducto, String pNombreProducto, int pIdCategoria,
+            double pPrecioNormal, double pPrecioPromocion, String pDescripcion,
+            String pRutaImagen) {
+        String sql = "UPDATE productos SET nombre_producto = ?, categoria_id = ?, precio_normal = ?, "
+                + "precio_promocion = ?, descripcion = ?, ruta_imagen_producto = ? WHERE id_producto = ?";
 
-    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setString(1, pNombreProducto);
-        stmt.setInt(2, pIdCategoria);
-        stmt.setDouble(3, pPrecioNormal);
-        stmt.setDouble(4, pPrecioPromocion);
-        stmt.setString(5, pDescripcion);
-        stmt.setString(6, pRutaImagen); // Actualizar la ruta de la imagen
-        stmt.setInt(7, pIdProducto);
-        stmt.executeUpdate();
-        System.out.println("PRODUCTO ACTUALIZADO");
-    } catch (SQLException e) {
-        System.out.println("Error updateProducto: " + e.getMessage());
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, pNombreProducto);
+            stmt.setInt(2, pIdCategoria);
+            stmt.setDouble(3, pPrecioNormal);
+            stmt.setDouble(4, pPrecioPromocion);
+            stmt.setString(5, pDescripcion);
+            stmt.setString(6, pRutaImagen); // Actualizar la ruta de la imagen
+            stmt.setInt(7, pIdProducto);
+            stmt.executeUpdate();
+            System.out.println("PRODUCTO ACTUALIZADO");
+        } catch (SQLException e) {
+            System.out.println("Error updateProducto: " + e.getMessage());
+        }
     }
-}
 
     // Eliminar un producto
     public void deleteProducto(int pIdProducto) {

@@ -20,6 +20,7 @@ public class InventarioDao {
     Connection conn = new Conector().conectar();
 
     // Método para actualizar el stock de un producto
+    // Método para actualizar el stock de un producto
      public void agregarStock(int productoId, int cantidadAgregar, String usuario) {
         // Obtener el stock actual
         int stockActual = getStock(productoId);
@@ -58,22 +59,25 @@ public class InventarioDao {
 
     // Método para obtener el stock actual de un producto
     public int getStock(int productoId) {
-        String sql = "SELECT stock_producto FROM inventarios WHERE producto_id = ?";
-        int stock = -1; // Valor por defecto si no se encuentra
+       String sql = "SELECT stock_producto FROM inventarios WHERE producto_id = ?";
+    int stock = 0; // Cambia el valor por defecto a 0
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, productoId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    stock = rs.getInt("stock_producto");
-                }
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, productoId);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                stock = rs.getInt("stock_producto");
+            } else {
+                System.out.println("No se encontró el producto con ID: " + productoId);
+                stock = 0; // O maneja este caso como desees
             }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener el stock: " + e.getMessage());
         }
-
-        return stock;
+    } catch (SQLException e) {
+        System.out.println("Error al obtener el stock: " + e.getMessage());
     }
+
+    return stock;
+}
     
     public void registrarModificacionInventario(int productoId, int cantidad, String motivo) {
     // Aquí va la lógica para insertar en la tabla detalle_inventarios

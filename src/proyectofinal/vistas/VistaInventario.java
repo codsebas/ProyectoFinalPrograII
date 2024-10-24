@@ -65,7 +65,8 @@ public class VistaInventario extends javax.swing.JFrame {
     }
 
     // Método para actualizar el stock de un producto en la base de datos
-    public void actualizarStock(int productoId, int cantidadSumar) {
+    
+     public void actualizarStock(int productoId, int cantidadSumar) {
         // Obtener el stock actual
         int stockActual = inventarioDao.getStock(productoId);
 
@@ -80,6 +81,7 @@ public class VistaInventario extends javax.swing.JFrame {
         // Refrescar la tabla después de la actualización
         cargarInventario();
     }
+     
      
      private void seleccionarDatosTabla(){
          
@@ -233,7 +235,7 @@ public class VistaInventario extends javax.swing.JFrame {
 
     private void btnRegistarModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistarModActionPerformed
         // TODO add your handling code here:
-       int fila = tblInventario.getSelectedRow();
+     int fila = tblInventario.getSelectedRow();
     if (fila >= 0) {
         int productoId = (int) tblInventario.getValueAt(fila, 0); // ID del producto
         // Obtener la cantidad a sumar del campo de texto
