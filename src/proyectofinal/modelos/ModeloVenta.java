@@ -15,7 +15,6 @@ public class ModeloVenta {
     private int numeroFactura;
     private String usuario;
     private String nitCliente;
-    private Timestamp fechaVenta;
     private double totalSinImpuestos;
     private double totalImpuestos;
     private double cargoTarjeta;
@@ -30,11 +29,10 @@ public class ModeloVenta {
         this.vista = vista;
     }
 
-    public ModeloVenta(int numeroFactura, String usuario, String nitCliente, Timestamp fechaVenta, double totalSinImpuestos, double totalImpuestps, double cargoTarjeta, double totalVenta, String metodoPago) {
+    public ModeloVenta(int numeroFactura, String usuario, String nitCliente, double totalSinImpuestos, double totalImpuestps, double cargoTarjeta, double totalVenta, String metodoPago) {
         this.numeroFactura = numeroFactura;
         this.usuario = usuario;
         this.nitCliente = nitCliente;
-        this.fechaVenta = fechaVenta;
         this.totalSinImpuestos = totalSinImpuestos;
         this.totalImpuestos = totalImpuestps;
         this.cargoTarjeta = cargoTarjeta;
@@ -64,14 +62,6 @@ public class ModeloVenta {
 
     public void setNitCliente(String nitCliente) {
         this.nitCliente = nitCliente;
-    }
-
-    public Timestamp getFechaVenta() {
-        return fechaVenta;
-    }
-
-    public void setFechaVenta(Timestamp fechaVenta) {
-        this.fechaVenta = fechaVenta;
     }
 
     public double getTotalSinImpuestos() {

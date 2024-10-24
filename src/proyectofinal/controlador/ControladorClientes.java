@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import proyectofinal.implementacion.ClientesImp;
@@ -30,17 +31,24 @@ public class ControladorClientes implements ActionListener, WindowListener, Mous
                 mostrarCliente();
             }
         } else if (e.getActionCommand().equals(modelo.getVista().btnGuardar.getActionCommand())) {
-            boolean resultado;
-            ModeloCliente modelo = new ModeloCliente();
-            modelo.setNIT(this.modelo.getVista().txtNit.getText());
-            modelo.setNombre(this.modelo.getVista().txtNombre.getText());
-            resultado = implementacion.insertarCliente(modelo);
-            if (!resultado) {
-                System.out.println("Inserción exitosa");
-                limpiar();
-                this.modelo.getVista().tblClientes.setModel(implementacion.modeloCliente());
+            if (modelo.getVista().txtNit.getText().equals("") || modelo.getVista().txtNombre.getText().equals("")) {
+                JOptionPane.showMessageDialog(null,
+                        "No se puede proceder porque los campos están en blanco.",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE);
             } else {
-                System.out.println("Inserción falló");
+                boolean resultado;
+                ModeloCliente modelo = new ModeloCliente();
+                modelo.setNIT(this.modelo.getVista().txtNit.getText());
+                modelo.setNombre(this.modelo.getVista().txtNombre.getText());
+                resultado = implementacion.insertarCliente(modelo);
+                if (!resultado) {
+                    System.out.println("Inserción exitosa");
+                    limpiar();
+                    this.modelo.getVista().tblClientes.setModel(implementacion.modeloCliente());
+                } else {
+                    System.out.println("Inserción falló");
+                }
             }
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnEliminar.getActionCommand())) {
@@ -77,15 +85,17 @@ public class ControladorClientes implements ActionListener, WindowListener, Mous
             }
         } else if (e.getActionCommand().equals(modelo.getVista().btnLimpiar.getActionCommand())) {
             limpiar();
-        } else if(e.getActionCommand().equals(modelo.getVista().btnCancelar.getActionCommand())){
+        } else if (e.getActionCommand().equals(modelo.getVista().btnCancelar.getActionCommand())) {
             limpiar();
             modelo.getVista().tblClientes.setModel(implementacion.modeloCliente());
+        } else if (e.getActionCommand().equals(modelo.getVista().btnRegresar.getActionCommand())) {
+            this.modelo.getVista().dispose();
         }
 
     }
 
     public void mostrarCliente() {
-        ModeloCliente model = implementacion.mostrarCliente(modelo.getVista().txtBuscarNit.getText()   );
+        ModeloCliente model = implementacion.mostrarCliente(modelo.getVista().txtBuscarNit.getText());
         modelo.getVista().txtNit.setText(model.getNIT());
         modelo.getVista().txtNombre.setText(model.getNombre());
     }
@@ -98,7 +108,7 @@ public class ControladorClientes implements ActionListener, WindowListener, Mous
 
     @Override
     public void windowOpened(WindowEvent e) {
-        if(e.getComponent().equals(modelo.getVista())){
+        if (e.getComponent().equals(modelo.getVista())) {
             modelo.getVista().tblClientes.setModel(implementacion.modeloCliente());
         }
     }
@@ -129,7 +139,7 @@ public class ControladorClientes implements ActionListener, WindowListener, Mous
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(e.getComponent().equals(modelo.getVista().tblClientes)){
+        if (e.getComponent().equals(modelo.getVista().tblClientes)) {
             modelo.getVista().txtBuscarNit.setText(String.valueOf(modelo.getVista().tblClientes.getValueAt(modelo.getVista().tblClientes.getSelectedRow(), 0)));
             modelo.getVista().txtNit.setText(String.valueOf(modelo.getVista().tblClientes.getValueAt(modelo.getVista().tblClientes.getSelectedRow(), 0)));
             modelo.getVista().txtNombre.setText(String.valueOf(modelo.getVista().tblClientes.getValueAt(modelo.getVista().tblClientes.getSelectedRow(), 1)));
@@ -153,4 +163,3 @@ public class ControladorClientes implements ActionListener, WindowListener, Mous
     }
 
 }
-
