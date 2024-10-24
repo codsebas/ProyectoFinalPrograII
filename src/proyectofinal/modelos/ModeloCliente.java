@@ -15,6 +15,10 @@ public class ModeloCliente {
     private String nombre;
     VistaClientes vista;
 
+    public ModeloCliente() {
+    }
+
+    
     public ModeloCliente(VistaClientes vista) {
         this.vista = vista;
     }
