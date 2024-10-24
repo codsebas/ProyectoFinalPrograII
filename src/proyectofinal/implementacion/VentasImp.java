@@ -7,63 +7,30 @@ package proyectofinal.implementacion;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import proyectofinal.interfaces.IVentas;
-import proyectofinal.interfaces.IDetalleVentas;
-import proyectofinal.modelos.ModeloDetalleVenta;
 import proyectofinal.modelos.ModeloVenta;
 import proyectofinal.modelos.ProductoTableModel;
 import proyectofinal.sql.QuerysVentas;
-import proyectofinal.sql.QuerysDetalleVentas;
 import proyectofinal.sql.Conector;
 import proyectofinal.sql.QuerysClientes;
-import proyectofinal.vistas.VistaVentas;
 
 /**
  *
  * @author sebas
  */
-public class VentasImp implements IVentas, IDetalleVentas {
+public class VentasImp implements IVentas{
 
     Conector conector = new Conector();
     QuerysVentas sql = new QuerysVentas();
     QuerysClientes sqlCli = new QuerysClientes();
-    QuerysDetalleVentas sqlDet = new QuerysDetalleVentas();
     PreparedStatement ps;
     ResultSet rs;
-    public static int no_factura;
-
-    private List<ModeloDetalleVenta> agregarDetalleAModelo(JTable tblListaProductos, int numFactura) {
-        List<ModeloDetalleVenta> detallesVenta = new ArrayList<>();
-        
-        
-        if (tblListaProductos.getRowCount() == 0) {
-            System.out.println("No hay productos en la lista de productos");
-            return detallesVenta; // Retornar lista vacía si no hay productos
-        }
-
-        // Agregar lógica para llenar el modelo de detalles de venta
-        for (int i = 0; i < tblListaProductos.getRowCount(); i++) {
-            ModeloDetalleVenta detalle = new ModeloDetalleVenta();
-            detalle.setNumFactura(numFactura);
-            detalle.setProductoId((int) tblListaProductos.getValueAt(i, 0)); // ID del producto
-            detalle.setCantidadProducto((int) tblListaProductos.getValueAt(i, 2)); // Cantidad de producto
-            detalle.setPrecioUnitario((double) tblListaProductos.getValueAt(i, 3)); // Precio unitario
-            detalle.setTotalLinea((double) tblListaProductos.getValueAt(i, 4)); // Total de la línea
-
-            detallesVenta.add(detalle);
-        }
-
-        return detallesVenta;
-    }
 
     @Override
-    public boolean insertarVenta(ModeloVenta modelo) {
-        boolean resultado = true;
+    public int insertarVenta(ModeloVenta modelo) {
+        int resultado = 0;
         conector.conectar(); // Conectar a la base de datos
         ps = conector.preparar(sql.getINSERTAR_VENTA(), PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -80,19 +47,8 @@ public class VentasImp implements IVentas, IDetalleVentas {
             int filasInsertadas = ps.executeUpdate();
             if (filasInsertadas > 0) {
                 ResultSet res = ps.getGeneratedKeys();
-                if (res.next()) {
-                    no_factura = res.getInt(1); // Obtener el número de factura generado
-                    System.out.println(no_factura);
-
-                    // Insertar detalles de la venta
-                    List<ModeloDetalleVenta> listaModelo = agregarDetalleAModelo(modelo.getVista().tblListaProductos, no_factura);
-                    resultado = insertarDetalleVenta(listaModelo); // Insertar detalles de venta
-
-                    if (resultado) {
-                        conector.mensaje("Se ha insertado correctamente", "Confirmación", 2);
-                    } else {
-                        conector.mensaje("No se insertó correctamente", "Error", 1);
-                    }
+                if(res.next()){
+                    resultado = res.getInt(1);
                 }
             }
             return resultado;
@@ -100,7 +56,7 @@ public class VentasImp implements IVentas, IDetalleVentas {
         } catch (SQLException ex) {
             conector.mensaje("Error en la inserción de venta", "Error", 1);
             System.out.println(ex.getMessage());
-            return false; // Si hay error, devolver false
+            return 0; // Si hay error, devolver 0
         } finally {
             conector.desconectar(); // Desconectar la base de datos
         }
@@ -285,46 +241,6 @@ public class VentasImp implements IVentas, IDetalleVentas {
             conector.desconectar();
         }
         return modelo;
-    }
-
-    //Detalles de venta
-    @Override
-    public boolean insertarDetalleVenta(List<ModeloDetalleVenta> modelo) {
-        boolean resultado = true;
-        conector.conectar();
-        ps = conector.preparar(sqlDet.getINSERTAR_DETALLE_VENTA());
-
-        try {
-            for (ModeloDetalleVenta detalle : modelo) {
-                ps.setInt(1, detalle.getNumFactura());
-                ps.setInt(2, detalle.getNumLinea());
-                ps.setInt(3, detalle.getProductoId());
-                ps.setInt(4, detalle.getCantidadProducto());
-                ps.setDouble(5, detalle.getPrecioUnitario());
-                ps.setDouble(6, detalle.getTotalLinea());
-                System.out.println(ps);
-                ps.executeUpdate();
-            }
-
-            resultado = true;
-        } catch (SQLException ex) {
-            conector.mensaje("Error en la inserción de detalle", "Error", 1);
-            resultado = false;
-        } finally {
-            conector.desconectar();
-        }
-
-        return resultado;
-    }
-
-    @Override
-    public boolean eliminarDetalleVenta(int factura) {
-        return false;
-    }
-
-    @Override
-    public DefaultTableModel modeloDetalleVenta() {
-        return null;
     }
 
 }

@@ -63,7 +63,29 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
     }
 
     private void limpiar() {
+    }
 
+    public List<ModeloDetalleVenta> agregarDetalleAModelo(JTable tblListaProductos, int numFactura) {
+        List<ModeloDetalleVenta> detallesVenta = new ArrayList<>();
+
+        if (tblListaProductos.getRowCount() == 0) {
+            System.out.println("No hay productos en la lista de productos");
+            return detallesVenta; // Retornar lista vacía si no hay productos
+        }
+
+        // Agregar lógica para llenar el modelo de detalles de venta
+        for (int i = 0; i < tblListaProductos.getRowCount(); i++) {
+            ModeloDetalleVenta detalle = new ModeloDetalleVenta();
+            detalle.setNumFactura(numFactura);
+            detalle.setNumLinea(i + 1);
+            detalle.setProductoId((Integer.parseInt(tblListaProductos.getValueAt(i, 0).toString()))); // ID del producto
+            detalle.setCantidadProducto(Integer.parseInt(tblListaProductos.getValueAt(i, 2).toString()));
+            detalle.setPrecioUnitario(Double.parseDouble(tblListaProductos.getValueAt(i, 3).toString()));
+            detalle.setTotalLinea(Double.parseDouble(tblListaProductos.getValueAt(i, 4).toString()));
+            detallesVenta.add(detalle);
+        }
+
+        return detallesVenta;
     }
 
     @Override
@@ -78,7 +100,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         } else if (e.getActionCommand().equals(modelo.getVista().btnCancelar.getActionCommand())) { //Cancela busqueda
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnGuardar.getActionCommand())) { //Guarda venta y detalle de venta
-            boolean resultado;
+            int resultado;
             System.out.println("Guardando");
             ModeloVenta modeloVenta = new ModeloVenta();
             modeloVenta.setUsuario("admin");
@@ -92,12 +114,22 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             modeloVenta.setTotalVenta(Double.parseDouble(this.modelo.getVista().txtTotalFinal.getText()));
             modeloVenta.setMetodoPago("efectivo");
             resultado = impVenta.insertarVenta(modeloVenta);
-            if (resultado) {
-                System.out.println("Inserción exitosa");
-                limpiar();
+
+            if (resultado > 0) {
+                System.out.println("Inserción del encabezado exitosa");
+                boolean resultadoDetalle;
+                List<ModeloDetalleVenta> modeloDetalle = agregarDetalleAModelo(this.modelo.getVista().tblListaProductos, resultado);
+                resultadoDetalle = impDetVenta.insertarDetalleVenta(modeloDetalle);
+                if (resultadoDetalle) {
+                    JOptionPane.showMessageDialog(null, "Se ha insertado todo sastifactoriamente", "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
+                    limpiar();
+                } else {
+                    JOptionPane.showInputDialog(null, "No se pudieron insertar los registros", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
-                System.out.println("Inserción falló");
+                System.out.println("Inserción del encabezado falló");
             }
+
         } else if (e.getActionCommand().equals(modelo.getVista().btnRegresar)) { //Regresa a vista anterior
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnVaciarLista)) { //Vacía lista de productos
