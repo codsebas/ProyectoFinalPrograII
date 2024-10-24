@@ -126,21 +126,7 @@ String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_norma
         }
     }
    
-   public static void generarCodigoBarras(String texto, String rutaArchivo) {
-        try {
-            // Parámetros para el código de barras (tipo CODE_128)
-            BitMatrix matrix = new MultiFormatWriter().encode(texto, BarcodeFormat.CODE_128, 300, 150);
-
-            // La ruta donde se va a guardar la imagen
-            Path ruta = FileSystems.getDefault().getPath(rutaArchivo);
-
-            // Guardar la imagen
-            MatrixToImageWriter.writeToPath(matrix, "png", ruta);
-            System.out.println("Código de barras generado en: " + rutaArchivo);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+ 
 
     private void agregarStockInicial(int productoId) {
         String sqlInsertInventario = "INSERT INTO inventarios (producto_id, stock_producto) VALUES (?, ?)";
