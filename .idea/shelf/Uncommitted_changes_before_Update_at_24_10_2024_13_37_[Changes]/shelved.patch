@@ -1,0 +1,21 @@
+Index: nbproject/private/private.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>compile.on.save=true\r\ndo.depend=false\r\ndo.jar=true\r\ndo.jlink=false\r\njavac.debug=true\r\njavadoc.preview=true\r\njlink.strip=false\r\nuser.properties.file=C:\\\\Users\\\\gerso\\\\AppData\\\\Roaming\\\\NetBeans\\\\17\\\\build.properties\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/nbproject/private/private.properties b/nbproject/private/private.properties
+--- a/nbproject/private/private.properties	(revision 03ce963159a0fb3826371396030e4a1289814aa2)
++++ b/nbproject/private/private.properties	(date 1729798072535)
+@@ -2,7 +2,9 @@
+ do.depend=false
+ do.jar=true
+ do.jlink=false
++file.reference.core-3.4.1.jar=C:\\Users\\sebas\\IdeaProjects\\ProyectoFinalPrograII\\dependencias\\core-3.4.1.jar
++file.reference.javase-3.4.1.jar=C:\\Users\\sebas\\IdeaProjects\\ProyectoFinalPrograII\\dependencias\\javase-3.4.1.jar
+ javac.debug=true
+ javadoc.preview=true
+ jlink.strip=false
+-user.properties.file=C:\\Users\\gerso\\AppData\\Roaming\\NetBeans\\17\\build.properties
++user.properties.file=C:\\Users\\sebas\\AppData\\Roaming\\NetBeans\\17\\build.properties
