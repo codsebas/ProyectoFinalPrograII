@@ -27,7 +27,7 @@ public class DetalleInventarioImp implements IDetalleInventario {
     @Override
     public DefaultTableModel modeloDetalleInventario() {
         DefaultTableModel modelo = new DefaultTableModel();
-        modelo.setColumnIdentifiers(new Object[]{"id", "producto id", "usuario", "feca modificacion", "cantdad modificada","tipo modicacion ", "motivo modificacion"});
+        modelo.setColumnIdentifiers(new Object[]{"id", "producto id", "usuario", "fecha modificacion", "cantdad modificada","tipo modificacion","motivo modificacion"});
         conector.conectar();
         try {
             ps = conector.preparar(sql.getMOSTRAR_TODOS_DETALLES());
@@ -57,7 +57,7 @@ public class DetalleInventarioImp implements IDetalleInventario {
     public DefaultTableModel modeloDetalleInventario(int txtDetalleInventario) {
 
         DefaultTableModel modelo = new DefaultTableModel();
-        modelo.setColumnIdentifiers(new Object[]{"id", "producto id", "usuario", "feca modificacion", "cantdad modificada"});
+        modelo.setColumnIdentifiers(new Object[]{"id", "producto id", "usuario", "fecha modificacion", "cantdad modificada","tipo modificacion","motivo modificacion"});
         conector.conectar();
         try {
             ps = conector.preparar(sql.getBUSCAR_DETALLE_INVENTARIOS());
@@ -70,7 +70,9 @@ public class DetalleInventarioImp implements IDetalleInventario {
                     rs.getString("producto_id"),
                     rs.getString("usuario_user"),
                     rs.getString("fecha_modificacion"),
-                    rs.getString("cantidad_modificada"),});
+                    rs.getString("cantidad_modificada"),
+                 rs.getString("tipo_modificacion"),
+                    rs.getString("motivo_modificacion"),});
             }
             conector.desconectar();
         } catch (SQLException ex) {

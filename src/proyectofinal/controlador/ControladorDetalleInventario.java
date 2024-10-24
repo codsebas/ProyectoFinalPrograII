@@ -30,6 +30,7 @@ public class ControladorDetalleInventario implements ActionListener, WindowListe
     public void mostrar() {
 ModeloDetalleInventario model =implementacion.mostrarCliente(Integer.parseInt(modelo.getVista().txtBuscarDetalle.getText()));
 modelo.getVista().txtBuscarDetalle.setText(String.valueOf(model.getIdDetalle()));
+
     }
 
     @Override
@@ -37,6 +38,7 @@ modelo.getVista().txtBuscarDetalle.setText(String.valueOf(model.getIdDetalle()))
         if (e.getActionCommand().equals(modelo.getVista().btnVisualizar.getActionCommand())) {
             if (modelo.getVista().txtBuscarDetalle.getText().equals("")) {
                 modelo.getVista().tblDetallesInventarios.setModel(implementacion.modeloDetalleInventario());
+                
 
             } else {
                 modelo.getVista().tblDetallesInventarios.setModel(implementacion.modeloDetalleInventario(Integer.parseInt(modelo.getVista().txtBuscarDetalle.getText())));
@@ -80,6 +82,16 @@ modelo.getVista().txtBuscarDetalle.setText(String.valueOf(model.getIdDetalle()))
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if(e.getComponent().equals(modelo.getVista().tblDetallesInventarios)){
+             modelo.getVista().txtBuscarDetalle.setText(String.valueOf(modelo.getVista().tblDetallesInventarios.getValueAt(modelo.getVista().tblDetallesInventarios.getSelectedRow(), 0)));
+             modelo.getVista().txtDetalle.setText(String.valueOf(modelo.getVista().tblDetallesInventarios.getValueAt(modelo.getVista().tblDetallesInventarios.getSelectedRow(), 0)));
+           modelo.getVista().txtProducto.setText(String.valueOf(modelo.getVista().tblDetallesInventarios.getValueAt(modelo.getVista().tblDetallesInventarios.getSelectedRow(), 1)));
+         modelo.getVista().txtUser.setText(String.valueOf(modelo.getVista().tblDetallesInventarios.getValueAt(modelo.getVista().tblDetallesInventarios.getSelectedRow(), 2)));
+           modelo.getVista().txtFecha.setText(String.valueOf(modelo.getVista().tblDetallesInventarios.getValueAt(modelo.getVista().tblDetallesInventarios.getSelectedRow(), 3)));
+            modelo.getVista().txtCantidad.setText(String.valueOf(modelo.getVista().tblDetallesInventarios.getValueAt(modelo.getVista().tblDetallesInventarios.getSelectedRow(), 4)));
+         modelo.getVista().txtTipoModificacion.setText(String.valueOf(modelo.getVista().tblDetallesInventarios.getValueAt(modelo.getVista().tblDetallesInventarios.getSelectedRow(), 5)));
+          modelo.getVista().txtMotivoModificacion.setText(String.valueOf(modelo.getVista().tblDetallesInventarios.getValueAt(modelo.getVista().tblDetallesInventarios.getSelectedRow(), 6)));
+        }
     }
 
     @Override
