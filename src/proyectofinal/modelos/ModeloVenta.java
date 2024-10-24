@@ -4,85 +4,102 @@
  */
 package proyectofinal.modelos;
 
-import java.util.List;
+import proyectofinal.vistas.VistaVentas;
 
 /**
  *
- * @author gerso
+ * @author sebas
  */
 public class ModeloVenta {
-    
-    private String idVenta;
-    private ModeloCliente cliente;
-    private List<ModeloProducto> productos;
-    private double total;
-    private String tipoPago;
-           
-    
-    public double calcularTotalConIVA(){
-        double totalConIVA = this.total*1.12;
-        if(this.tipoPago.equals("tarjeta")){
-            totalConIVA *= 1.05;
-        }
-        
- 
-    
-    return totalConIVA;
-    
-    
-}
+
+    private String usuario;
+    private String nitCliente;
+    private double totalSinImpuestos;
+    private double totalImpuestps;
+    private double cargoTarjeta;
+    private double totalVenta;
+    private String metodoPago;
+    VistaVentas vista;
 
     public ModeloVenta() {
     }
 
-    public ModeloVenta(String idVenta, ModeloCliente cliente, List<ModeloProducto> productos, double total, String tipoPago) {
-        this.idVenta = idVenta;
-        this.cliente = cliente;
-        this.productos = productos;
-        this.total = total;
-        this.tipoPago = tipoPago;
+    public ModeloVenta(VistaVentas vista) {
+        this.vista = vista;
     }
 
-    public String getIdVenta() {
-        return idVenta;
+    public ModeloVenta(String usuario, String nitCliente, double totalSinImpuestos, double totalImpuestps, double cargoTarjeta, double totalVenta, String metodoPago) {
+        this.usuario = usuario;
+        this.nitCliente = nitCliente;
+        this.totalSinImpuestos = totalSinImpuestos;
+        this.totalImpuestps = totalImpuestps;
+        this.cargoTarjeta = cargoTarjeta;
+        this.totalVenta = totalVenta;
+        this.metodoPago = metodoPago;
     }
 
-    public void setIdVenta(String idVenta) {
-        this.idVenta = idVenta;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public ModeloCliente getCliente() {
-        return cliente;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public void setCliente(ModeloCliente cliente) {
-        this.cliente = cliente;
+    public String getNitCliente() {
+        return nitCliente;
     }
 
-    public List<ModeloProducto> getProductos() {
-        return productos;
+    public void setNitCliente(String nitCliente) {
+        this.nitCliente = nitCliente;
     }
 
-    public void setProductos(List<ModeloProducto> productos) {
-        this.productos = productos;
+    public double getTotalSinImpuestos() {
+        return totalSinImpuestos;
     }
 
-    public double getTotal() {
-        return total;
+    public void setTotalSinImpuestos(double totalSinImpuestos) {
+        this.totalSinImpuestos = totalSinImpuestos;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public double getTotalImpuestps() {
+        return totalImpuestps;
     }
 
-    public String getTipoPago() {
-        return tipoPago;
+    public void setTotalImpuestps(double totalImpuestps) {
+        this.totalImpuestps = totalImpuestps;
     }
 
-    public void setTipoPago(String tipoPago) {
-        this.tipoPago = tipoPago;
+    public double getCargoTarjeta() {
+        return cargoTarjeta;
     }
-    
 
-    
+    public void setCargoTarjeta(double cargoTarjeta) {
+        this.cargoTarjeta = cargoTarjeta;
+    }
+
+    public double getTotalVenta() {
+        return totalVenta;
+    }
+
+    public void setTotalVenta(double totalVenta) {
+        this.totalVenta = totalVenta;
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public VistaVentas getVista() {
+        return vista;
+    }
+
+    public void setVista(VistaVentas vista) {
+        this.vista = vista;
+    }
+
 }
