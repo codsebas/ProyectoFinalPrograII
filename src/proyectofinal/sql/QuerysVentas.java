@@ -23,7 +23,7 @@ public class QuerysVentas {
             + "FROM productos p\n"
             + "JOIN inventarios i ON p.id_producto = i.producto_id\n"
             + "WHERE i.stock_producto >= 1 AND p.id_producto = ?;";
-
+    
     public String getSELECCIONAR_TODAS_LAS_VENTAS() {
         return SELECCIONAR_TODAS_LAS_VENTAS;
     }
@@ -50,5 +50,5 @@ public class QuerysVentas {
 
     public String getSELECCIONAR_PRODUCTO() {
         return SELECCIONAR_PRODUCTO;
-    }
+    }    
 }

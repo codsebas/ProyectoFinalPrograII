@@ -15,6 +15,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -27,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -37,9 +40,11 @@ import proyectofinal.modelos.ModeloVenta;
 import proyectofinal.implementacion.DetalleVentasImp;
 import proyectofinal.implementacion.VentasImp;
 import proyectofinal.modelos.ButtonRenderer;
+import proyectofinal.modelos.ModeloInsertarDetalleInventario;
 import proyectofinal.sql.Conector;
 import proyectofinal.sql.QuerysReportes;
 import proyectofinal.vistas.VistaClientes;
+import proyectofinal.modelos.UsuarioActual;
 
 /**
  *
@@ -48,7 +53,6 @@ import proyectofinal.vistas.VistaClientes;
 public class ControladorVentas implements ActionListener, WindowListener, MouseListener {
 
     ModeloVenta modelo;
-
     DetalleVentasImp impDetVenta = new DetalleVentasImp();
     VentasImp impVenta = new VentasImp();
 
@@ -70,16 +74,27 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         }
 
         double totalLinea = precioUnitario * cantidad;
-
         detalleModel.addRow(new Object[]{idProducto, nombreProducto, cantidad, precioUnitario, totalLinea, "Eliminar"});
-
         modelo.getVista().tblListaProductos.setModel(detalleModel);
-
         int nuevoStock = stockActual - cantidad;
         modelo.getVista().tblMostrarProductos.setValueAt(nuevoStock, selectedRow, 3);
     }
 
     private void limpiar() {
+        vaciarLista();
+        this.modelo.getVista().txtCargosAdicionales.setText("");
+        this.modelo.getVista().txtImpuestos.setText("");
+        this.modelo.getVista().txtSubtotal.setText("");
+        this.modelo.getVista().txtTotalFinal.setText("");
+    }
+
+    private void actualizar() {
+        this.modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto());
+    }
+    
+    private void vaciarLista(){
+        DefaultTableModel model = (DefaultTableModel) this.modelo.getVista().tblListaProductos.getModel();
+        model.setRowCount(0);
     }
 
     public List<ModeloDetalleVenta> agregarDetalleAModelo(JTable tblListaProductos, int numFactura) {
@@ -90,7 +105,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             return detallesVenta; // Retornar lista vacía si no hay productos
         }
 
-        // Agregar lógica para llenar el modelo de detalles de venta
+        // lógica para llenar el modelo de detalles de venta
         for (int i = 0; i < tblListaProductos.getRowCount(); i++) {
             ModeloDetalleVenta detalle = new ModeloDetalleVenta();
             detalle.setNumFactura(numFactura);
@@ -112,15 +127,22 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             VistaClientes vistaClientes = new VistaClientes();
             vistaClientes.setVisible(true);
             modelo.getVista().cmbClientes.setModel(impVenta.mostrarCliente());
+
         } else if (e.getActionCommand().equals(modelo.getVista().btnBuscar.getActionCommand())) { //Busca productos
+            if (modelo.getVista().txtBuscarProducto.getText().equals("")) {
+                modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto());
+            } else {
+                modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto(Integer.parseInt(modelo.getVista().txtBuscarProducto.getText())));
+            }
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnCancelar.getActionCommand())) { //Cancela busqueda
+            modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto());
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnGuardar.getActionCommand())) { //Guarda venta y detalle de venta
             int numeroFactura;
             System.out.println("Guardando");
             ModeloVenta modeloVenta = new ModeloVenta();
-            modeloVenta.setUsuario("admin");
+            modeloVenta.setUsuario(this.modelo.getVista().txtUsuario.getText());
             String clienteSeleccionado = this.modelo.getVista().cmbClientes.getSelectedItem().toString();
             String[] partesCliente = clienteSeleccionado.split("-");
             String nitCliente = partesCliente[0];
@@ -129,30 +151,54 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             modeloVenta.setTotalImpuestos(Double.parseDouble(this.modelo.getVista().txtImpuestos.getText()));
             modeloVenta.setCargoTarjeta(Double.parseDouble(this.modelo.getVista().txtCargosAdicionales.getText()));
             modeloVenta.setTotalVenta(Double.parseDouble(this.modelo.getVista().txtTotalFinal.getText()));
-            modeloVenta.setMetodoPago("efectivo");
+            modeloVenta.setMetodoPago(this.modelo.getVista().cmbMetodoPago.getSelectedItem().toString());
             numeroFactura = impVenta.insertarVenta(modeloVenta);
 
             if (numeroFactura > 0) {
                 System.out.println("Inserción del encabezado exitosa");
                 boolean resultadoDetalle;
                 List<ModeloDetalleVenta> modeloDetalle = agregarDetalleAModelo(this.modelo.getVista().tblListaProductos, numeroFactura);
+
                 resultadoDetalle = impDetVenta.insertarDetalleVenta(modeloDetalle);
                 if (resultadoDetalle) {
-                    //Logica de Reporte UwU
-                    pdfFactura();
-                    JOptionPane.showMessageDialog(null, "Se ha insertado todo sastifactoriamente", "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-                    limpiar();
+                    if (impDetVenta.actualizarStock(modeloDetalle)) {
+                        System.out.println("Stock actualizado correctamente");
+
+                        //insertar el detalle de inventario
+                        List<ModeloInsertarDetalleInventario> modeloInventario = new ArrayList<>();
+                        for (ModeloDetalleVenta detalle : modeloDetalle) {
+                            ModeloInsertarDetalleInventario detalleInventario = new ModeloInsertarDetalleInventario();
+                            detalleInventario.setProductoId(detalle.getProductoId());
+                            detalleInventario.setCantidadModificada(detalle.getCantidadProducto());
+                            detalleInventario.setMotivoModificacion("Venta realizada");
+                            detalleInventario.setTipoModificacion("salida");
+                            detalleInventario.setUsuario(modeloVenta.getUsuario());
+                            modeloInventario.add(detalleInventario);
+                        }
+
+                        if (impDetVenta.insertarDetalleInventario(modeloInventario)) {
+                            System.out.println("Detalle de inventario insertado correctamente");
+                            pdfFactura();
+                            JOptionPane.showMessageDialog(null, "Se ha insertado todo satisfactoriamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                            limpiar();
+                            actualizar();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No se pudo insertar el detalle de inventario", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se pudo actualizar el stock", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
-                    JOptionPane.showInputDialog(null, "No se pudieron insertar los registros", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "No se pudieron insertar los registros de detalle", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 System.out.println("Inserción del encabezado falló");
             }
 
-        } else if (e.getActionCommand().equals(modelo.getVista().btnRegresar)) { //Regresa a vista anterior
-
-        } else if (e.getActionCommand().equals(modelo.getVista().btnVaciarLista)) { //Vacía lista de productos
-
+        } else if (e.getActionCommand().equals(modelo.getVista().btnVaciarLista.getActionCommand())) { //Vacía lista de productos
+            limpiar();
+            
+            
         } else if (e.getSource() == modelo.getVista().tblMostrarProductos) { // Selección de productos de la tabla
             int selectedRow = modelo.getVista().tblMostrarProductos.getSelectedRow();
             if (selectedRow != -1) {
@@ -163,7 +209,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
                     int cantidad = Integer.parseInt(cantidadStr);
                     if (cantidad > 0 && cantidad <= stockActual) {
                         int nuevoStock = stockActual - cantidad;
-                        modelo.getVista().tblMostrarProductos.setValueAt(nuevoStock, selectedRow, 3); // Actualizar visualmente el stock
+                        modelo.getVista().tblMostrarProductos.setValueAt(nuevoStock, selectedRow, 3);
 
                         agregarProductoADetalle(selectedRow, cantidad);
                     } else {
@@ -235,7 +281,6 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
                 if (rs.next()) {
                     do {
-                        // Agregar filas de datos
                         for (int i = 1; i <= 10; i++) {
                             cell = new PdfPCell(new Phrase(rs.getString(i), contenidoFont));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -244,7 +289,6 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
                         }
                     } while (rs.next());
 
-                    // No se agrega la fila con el total de ventas
                     documento.add(tabla);
                 }
                 conector.desconectar();
@@ -259,7 +303,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
             JOptionPane.showMessageDialog(null, "Guardado en: " + nombreArchivo, "Reporte generado exitosamente", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
-            e.printStackTrace(); // Mostrar el error en la consola
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Ocurrió un error al generar el PDF", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -268,14 +312,16 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
     @Override
     public void windowOpened(WindowEvent e) {
         if (e.getComponent().equals(modelo.getVista())) {
-            DefaultTableModel model = impVenta.modeloProducto(); // Obtén el modelo de productos
+            DefaultTableModel model = impVenta.modeloProducto(); 
             modelo.getVista().txtCargosAdicionales.setText("0");
             model.addColumn("Seleccionar");
             modelo.getVista().tblMostrarProductos.setModel(model);
 
+            JComboBox<String> comboBoxMetodoPago = new JComboBox<>(new String[]{"efectivo", "tarjeta"});
+
             TableColumn productColumn = modelo.getVista().tblMostrarProductos.getColumnModel().getColumn(model.getColumnCount() - 1);
-            productColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo)); // Pasa el modelo correctamente
-            productColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo));  // Pasa el modelo correctamente
+            productColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, comboBoxMetodoPago));
+            productColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, comboBoxMetodoPago)); 
 
             modelo.getVista().cmbClientes.setModel(impVenta.mostrarCliente());
 
@@ -283,9 +329,11 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             detalleModel.setColumnIdentifiers(new Object[]{"ID Producto", "Nombre", "Cantidad", "Precio Unitario", "Total Línea", "Eliminar"});
             modelo.getVista().tblListaProductos.setModel(detalleModel);
 
+            modelo.getVista().txtUsuario.setText(UsuarioActual.usuarioActual);
+
             TableColumn detailColumn = modelo.getVista().tblListaProductos.getColumnModel().getColumn(5);
-            detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo)); // Pasa el modelo correctamente
-            detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo));  // Pasa el modelo correctamente
+            detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, comboBoxMetodoPago)); 
+            detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, comboBoxMetodoPago)); 
         }
     }
 

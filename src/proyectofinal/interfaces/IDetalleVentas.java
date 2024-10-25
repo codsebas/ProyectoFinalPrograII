@@ -7,6 +7,7 @@ package proyectofinal.interfaces;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import proyectofinal.modelos.ModeloDetalleVenta;
+import proyectofinal.modelos.ModeloInsertarDetalleInventario;
 
 /**
  *
@@ -16,5 +17,7 @@ public interface IDetalleVentas {
     public boolean insertarDetalleVenta(List<ModeloDetalleVenta> modelo);
     public boolean eliminarDetalleVenta(int  factura);
     public DefaultTableModel modeloDetalleVenta();
+    public boolean actualizarStock(List<ModeloDetalleVenta> modelo);
+    public boolean insertarDetalleInventario(List<ModeloInsertarDetalleInventario> modelo);
     
 }

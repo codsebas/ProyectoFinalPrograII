@@ -25,9 +25,9 @@ public class VistaMenu extends javax.swing.JFrame {
     
     public VistaMenu(String rol) {
         this.rol = rol;
-        setTitle("Menú");
-        setLocationRelativeTo(null);
         initComponents();
+        this.setTitle("Menú");
+        this.setLocationRelativeTo(null);
         botonesRol(rol);
     }
 

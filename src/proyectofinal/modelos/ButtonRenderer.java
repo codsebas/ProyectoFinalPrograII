@@ -20,13 +20,15 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
     private JTable tableProductos;
     private JTable tableDetalle;
     private int selectedRow;
-    private ModeloVenta modelo; // Referencia al modelo pasado por el controlador
+    private ModeloVenta modelo;
+    private JComboBox<String> cmbMetodoPago;
 
     // Constructor que acepta el modelo ya existente
-    public ButtonRenderer(JTable tableProductos, JTable tableDetalle, ModeloVenta modelo) {
+    public ButtonRenderer(JTable tableProductos, JTable tableDetalle, ModeloVenta modelo, JComboBox<String> comboBoxMetodoPago) {
         this.tableProductos = tableProductos;
         this.tableDetalle = tableDetalle;
         this.modelo = modelo; // Asigna el modelo pasado como argumento
+        this.cmbMetodoPago = comboBoxMetodoPago; // Inicializa el JComboBox
         renderButton = new JButton();
         editButton = new JButton();
         editButton.setFocusPainted(false);
@@ -121,23 +123,36 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
         detalleModel.addRow(new Object[]{idProducto, nombreProducto, cantidad, precioUnitario, totalLinea, "Eliminar"}); // Agregar fila
     }
 
-    // Método para recalcular los totales
     private void recalcularTotales() {
-        DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel();
+        DefaultTableModel detalleModel = (DefaultTableModel) tableDetalle.getModel();
         double subtotal = 0.0;
         double impuestos = 0.0;
         double total = 0.0;
+        double totalCargo = 0.0;
         double impuestoPorcentaje = 0.12; // Porcentaje de impuestos
+        double cargoTarjeta = 0.05; // Cargo adicional del 5% por pago con tarjeta
 
+        // Calcular el subtotal
         for (int i = 0; i < detalleModel.getRowCount(); i++) {
             double totalLinea = Double.parseDouble(detalleModel.getValueAt(i, 4).toString()); // Columna 4: Total de la línea
             subtotal += totalLinea;
         }
 
+        // Calcular impuestos
         impuestos = subtotal * impuestoPorcentaje;
-        total = subtotal + impuestos;
 
-        // Actualizar los campos visuales (asegúrate de que estos sean los correctos en tu vista)
+        // Verificar el método de pago seleccionado y aplicar cargo si es tarjeta
+        if (cmbMetodoPago.getSelectedItem().equals("tarjeta")) {
+            total = subtotal + impuestos; // Sumar subtotal e impuestos
+            totalCargo = total * cargoTarjeta;
+            total += totalCargo;
+        } else {
+            total = subtotal + impuestos; // Sin cargo adicional
+            totalCargo = 0;
+        }
+
+        // Actualizar los campos de texto con los resultados
+        modelo.getVista().txtCargosAdicionales.setText(String.format("%.2f", totalCargo));
         modelo.getVista().txtSubtotal.setText(String.format("%.2f", subtotal));
         modelo.getVista().txtImpuestos.setText(String.format("%.2f", impuestos));
         modelo.getVista().txtTotalFinal.setText(String.format("%.2f", total));
