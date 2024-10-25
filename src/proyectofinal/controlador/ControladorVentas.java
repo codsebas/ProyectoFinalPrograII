@@ -100,7 +100,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         } else if (e.getActionCommand().equals(modelo.getVista().btnCancelar.getActionCommand())) { //Cancela busqueda
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnGuardar.getActionCommand())) { //Guarda venta y detalle de venta
-            int resultado;
+            int numeroFactura;
             System.out.println("Guardando");
             ModeloVenta modeloVenta = new ModeloVenta();
             modeloVenta.setUsuario("admin");
@@ -113,14 +113,15 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             modeloVenta.setCargoTarjeta(Double.parseDouble(this.modelo.getVista().txtCargosAdicionales.getText()));
             modeloVenta.setTotalVenta(Double.parseDouble(this.modelo.getVista().txtTotalFinal.getText()));
             modeloVenta.setMetodoPago("efectivo");
-            resultado = impVenta.insertarVenta(modeloVenta);
+            numeroFactura = impVenta.insertarVenta(modeloVenta);
 
-            if (resultado > 0) {
+            if (numeroFactura > 0) {
                 System.out.println("Inserción del encabezado exitosa");
                 boolean resultadoDetalle;
-                List<ModeloDetalleVenta> modeloDetalle = agregarDetalleAModelo(this.modelo.getVista().tblListaProductos, resultado);
+                List<ModeloDetalleVenta> modeloDetalle = agregarDetalleAModelo(this.modelo.getVista().tblListaProductos, numeroFactura);
                 resultadoDetalle = impDetVenta.insertarDetalleVenta(modeloDetalle);
                 if (resultadoDetalle) {
+                    //Logica de Reporte UwU
                     JOptionPane.showMessageDialog(null, "Se ha insertado todo sastifactoriamente", "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
                     limpiar();
                 } else {

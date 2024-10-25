@@ -3,9 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package proyectofinal.vistas;
+
+import javax.swing.JOptionPane;
 import proyectofinal.modelos.ModeloVenta;
 import proyectofinal.modelos.ModeloDetalleVenta;
 import proyectofinal.controlador.ControladorVentas;
+import proyectofinal.modelos.UsuarioActual;
+
 /**
  *
  * @author sebas
@@ -266,6 +270,11 @@ public class VistaVentas extends javax.swing.JFrame {
         btnGuardar.setText("Guardar Venta");
 
         btnRegresar.setText("Regresar");
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarActionPerformed(evt);
+            }
+        });
 
         btnAgregarCliente.setText("Agregar Cliente");
 
@@ -377,6 +386,17 @@ public class VistaVentas extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbClientesActionPerformed
 
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        if (UsuarioActual.usuarioActual != null && UsuarioActual.rolActual != null) {
+            // Usamos el rol almacenado en UsuarioActual
+            VistaMenu menu = new VistaMenu(UsuarioActual.rolActual);
+            this.setVisible(false);
+            menu.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: No se ha iniciado sesión.");
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRegresarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -411,8 +431,8 @@ public class VistaVentas extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void setControladorVentas(ControladorVentas controlador){
+
+    private void setControladorVentas(ControladorVentas controlador) {
         btnAgregarCliente.addActionListener(controlador);
         btnBuscar.addActionListener(controlador);
         btnCancelar.addActionListener(controlador);
