@@ -82,6 +82,11 @@ public class VistaMenu extends javax.swing.JFrame {
         btnVistaClientes.setText("CLIENTES");
 
         btnConsultaVentas.setText("CONSULTA DE VENTAS");
+        btnConsultaVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultaVentasActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -203,6 +208,13 @@ public class VistaMenu extends javax.swing.JFrame {
         this.setVisible(false);
         vistaV.setVisible(true);
     }//GEN-LAST:event_btnVistaVentasActionPerformed
+
+    private void btnConsultaVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaVentasActionPerformed
+        // TODO add your handling code here:
+        VistaConsultaVentas vistaC = new VistaConsultaVentas();
+        this.setVisible(false);
+        vistaC.setVisible(true);
+    }//GEN-LAST:event_btnConsultaVentasActionPerformed
 
     /**
      * @param args the command line arguments

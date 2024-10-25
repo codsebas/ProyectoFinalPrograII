@@ -73,13 +73,10 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
                 recalcularTotales();
             }
         } else if (table.equals(tableDetalle)) {
-            // Botón "Eliminar" de la tabla de detalle
             if (selectedRow != -1) {
-                // Obtener el ID del producto que se va a eliminar de la tabla de detalle
                 String idProducto = tableDetalle.getValueAt(selectedRow, 0).toString(); // Asumiendo que el ID está en la columna 0
                 int cantidadEliminar = Integer.parseInt(tableDetalle.getValueAt(selectedRow, 2).toString()); // Cantidad a eliminar (columna 2)
 
-                // Buscar el producto correspondiente en la tabla de productos
                 for (int i = 0; i < tableProductos.getRowCount(); i++) {
                     if (tableProductos.getValueAt(i, 0).toString().equals(idProducto)) {
                         // Recuperar el stock actual en la tabla de productos
@@ -90,13 +87,12 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
                     }
                 }
 
-                // Eliminar el producto de la tabla de detalle
                 ((DefaultTableModel) tableDetalle.getModel()).removeRow(selectedRow);
                 recalcularTotales();
             }
         }
 
-        fireEditingStopped(); // Detener la edición de la celda
+        fireEditingStopped();
     }
 
     // Método para pedir cantidad con JOptionPane
@@ -109,10 +105,9 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-        return 0; // Retorna 0 si el valor no es válido
+        return 0;
     }
 
-    // Método para agregar el producto a la tabla de detalle
     private void agregarProductoADetalle(int selectedRow, int cantidad) {
         DefaultTableModel detalleModel = (DefaultTableModel) tableDetalle.getModel();
         String idProducto = tableProductos.getValueAt(selectedRow, 0).toString(); // Columna 0: ID del producto
@@ -129,16 +124,15 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
         double impuestos = 0.0;
         double total = 0.0;
         double totalCargo = 0.0;
-        double impuestoPorcentaje = 0.12; // Porcentaje de impuestos
-        double cargoTarjeta = 0.05; // Cargo adicional del 5% por pago con tarjeta
+        double impuestoPorcentaje = 0.12; 
+        double cargoTarjeta = 0.05; 
 
         // Calcular el subtotal
         for (int i = 0; i < detalleModel.getRowCount(); i++) {
-            double totalLinea = Double.parseDouble(detalleModel.getValueAt(i, 4).toString()); // Columna 4: Total de la línea
+            double totalLinea = Double.parseDouble(detalleModel.getValueAt(i, 4).toString()); 
             subtotal += totalLinea;
         }
 
-        // Calcular impuestos
         impuestos = subtotal * impuestoPorcentaje;
 
         // Verificar el método de pago seleccionado y aplicar cargo si es tarjeta
@@ -150,7 +144,8 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
             total = subtotal + impuestos; // Sin cargo adicional
             totalCargo = 0;
         }
-
+        System.out.println("Total de cargo por tarjeta");
+        System.out.println(totalCargo);
         // Actualizar los campos de texto con los resultados
         modelo.getVista().txtCargosAdicionales.setText(String.format("%.2f", totalCargo));
         modelo.getVista().txtSubtotal.setText(String.format("%.2f", subtotal));

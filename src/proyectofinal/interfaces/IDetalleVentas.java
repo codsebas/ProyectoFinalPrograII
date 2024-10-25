@@ -17,6 +17,7 @@ public interface IDetalleVentas {
     public boolean insertarDetalleVenta(List<ModeloDetalleVenta> modelo);
     public boolean eliminarDetalleVenta(int  factura);
     public DefaultTableModel modeloDetalleVenta();
+    public DefaultTableModel modeloDetalleVenta(int factura);
     public boolean actualizarStock(List<ModeloDetalleVenta> modelo);
     public boolean insertarDetalleInventario(List<ModeloInsertarDetalleInventario> modelo);
     

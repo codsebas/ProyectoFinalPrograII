@@ -92,25 +92,64 @@ public class DetalleVentasImp implements IDetalleVentas {
     @Override
     public boolean insertarDetalleInventario(List<ModeloInsertarDetalleInventario> modeloInventario) {
         boolean resultado = true;
-    conector.conectar();
-    ps = conector.preparar(sql.getGUARDAR_DETALLE_INVENTARIO());
-    try {
-        for (ModeloInsertarDetalleInventario detalle : modeloInventario) {
-            ps.setInt(1, detalle.getProductoId());
-            ps.setString(2, detalle.getUsuario()); 
-            ps.setInt(3, detalle.getCantidadModificada());
-            ps.setString(4, detalle.getTipoModificacion());
-            ps.setString(5, detalle.getMotivoModificacion());
-            ps.executeUpdate();
+        conector.conectar();
+        ps = conector.preparar(sql.getGUARDAR_DETALLE_INVENTARIO());
+        try {
+            for (ModeloInsertarDetalleInventario detalle : modeloInventario) {
+                ps.setInt(1, detalle.getProductoId());
+                ps.setString(2, detalle.getUsuario());
+                ps.setInt(3, detalle.getCantidadModificada());
+                ps.setString(4, detalle.getTipoModificacion());
+                ps.setString(5, detalle.getMotivoModificacion());
+                ps.executeUpdate();
+            }
+            return true;
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error al insertar en detalle de inventario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            resultado = false;
+        } finally {
+            conector.desconectar();
         }
-        return true;
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(null, "Error al insertar en detalle de inventario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        resultado = false;
-    } finally {
-        conector.desconectar();
+        return resultado;
     }
-    return resultado;
+
+    @Override
+    public DefaultTableModel modeloDetalleVenta(int factura) {
+        DefaultTableModel modelo = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        modelo.setColumnIdentifiers(new Object[]{
+            "Id Producto", // no_factura
+            "Cantidad", // usuario_user
+            "Precio unitario", // cliente_nit
+            "Total"
+        });
+
+        conector.conectar();
+        try {
+            ps = conector.preparar(sql.getBUSCAR_DETALLES_POR_FACTURA());
+            ps.setInt(1, factura);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getString("producto_id"),
+                    rs.getString("cantidad_producto"),
+                    rs.getString("precio_unitario"),
+                    rs.getString("total_linea"),
+                });
+            }
+            conector.desconectar();
+
+        }catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error", 1);
+            conector.desconectar();
+        }
+        return modelo;
     }
 
 }

@@ -61,12 +61,12 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
     }
 
     private void agregarProductoADetalle(int selectedRow, int cantidad) {
-        DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel(); // Tabla de detalle de venta
+        DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel();
 
-        String idProducto = modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 0).toString(); // Columna 0: ID del producto
-        String nombreProducto = modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 1).toString(); // Columna 1: Nombre del producto
-        double precioUnitario = Double.parseDouble(modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 2).toString()); // Columna 2: Precio unitario
-        int stockActual = Integer.parseInt(modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 3).toString()); // Columna 3: Stock actual
+        String idProducto = modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 0).toString();
+        String nombreProducto = modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 1).toString();
+        double precioUnitario = Double.parseDouble(modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 2).toString());
+        int stockActual = Integer.parseInt(modelo.getVista().tblMostrarProductos.getValueAt(selectedRow, 3).toString());
 
         if (cantidad > stockActual) {
             JOptionPane.showMessageDialog(null, "No hay suficiente stock disponible.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -76,8 +76,11 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         double totalLinea = precioUnitario * cantidad;
         detalleModel.addRow(new Object[]{idProducto, nombreProducto, cantidad, precioUnitario, totalLinea, "Eliminar"});
         modelo.getVista().tblListaProductos.setModel(detalleModel);
+
         int nuevoStock = stockActual - cantidad;
         modelo.getVista().tblMostrarProductos.setValueAt(nuevoStock, selectedRow, 3);
+
+        recalcularTotales();
     }
 
     private void limpiar() {
@@ -91,11 +94,38 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
     private void actualizar() {
         this.modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto());
     }
-    
-    private void vaciarLista(){
-        DefaultTableModel model = (DefaultTableModel) this.modelo.getVista().tblListaProductos.getModel();
-        model.setRowCount(0);
+
+    private void vaciarLista() {
+    DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel();
+    int rowCount = detalleModel.getRowCount();
+    for (int i = 0; i < rowCount; i++) {
+        String idProducto = detalleModel.getValueAt(i, 0).toString(); 
+        int cantidad = Integer.parseInt(detalleModel.getValueAt(i, 2).toString());
+        
+        DefaultTableModel mostrarModel = (DefaultTableModel) modelo.getVista().tblMostrarProductos.getModel();
+        int mostrarRowCount = mostrarModel.getRowCount();
+
+        for (int j = 0; j < mostrarRowCount; j++) {
+            String idProductoMostrar = mostrarModel.getValueAt(j, 0).toString(); // ID en la tabla de mostrar
+
+            if (idProducto.equals(idProductoMostrar)) {
+                int stockActual = Integer.parseInt(mostrarModel.getValueAt(j, 3).toString());
+                mostrarModel.setValueAt(stockActual + cantidad, j, 3); // Aumentar el stock
+                break;
+            }
+        }
     }
+
+    detalleModel.setRowCount(0);
+    
+    detalleModel.setColumnIdentifiers(new Object[]{"ID Producto", "Nombre", "Cantidad", "Precio Unitario", "Total Línea", "Eliminar"});
+    modelo.getVista().tblListaProductos.setModel(detalleModel);
+    
+    TableColumn detailColumn = modelo.getVista().tblListaProductos.getColumnModel().getColumn(5);
+    detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
+    detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
+}
+
 
     public List<ModeloDetalleVenta> agregarDetalleAModelo(JTable tblListaProductos, int numFactura) {
         List<ModeloDetalleVenta> detallesVenta = new ArrayList<>();
@@ -120,7 +150,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         return detallesVenta;
     }
 
-    @Override
+    @Override   
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(modelo.getVista().btnAgregarCliente.getActionCommand())) { //Llama a mantenimiento de clientes
@@ -197,8 +227,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnVaciarLista.getActionCommand())) { //Vacía lista de productos
             limpiar();
-            
-            
+
         } else if (e.getSource() == modelo.getVista().tblMostrarProductos) { // Selección de productos de la tabla
             int selectedRow = modelo.getVista().tblMostrarProductos.getSelectedRow();
             if (selectedRow != -1) {
@@ -309,31 +338,57 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
     }
 
+    private void recalcularTotales() {
+        DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel();
+        double subtotal = 0;
+
+        for (int i = 0; i < detalleModel.getRowCount(); i++) {
+            subtotal += Double.parseDouble(detalleModel.getValueAt(i, 4).toString());
+        }
+
+        modelo.getVista().txtSubtotal.setText(String.format("%.2f", subtotal));
+
+        double taxRate = 0.15;
+        double impuestos = subtotal * taxRate;
+        modelo.getVista().txtImpuestos.setText(String.format("%.2f", impuestos));
+
+        double cargoTarjeta = 0;
+        if ("tarjeta".equalsIgnoreCase(modelo.getVista().cmbMetodoPago.getSelectedItem().toString())) {
+            cargoTarjeta = subtotal * 0.05;
+        }
+        modelo.getVista().txtCargosAdicionales.setText(String.format("%.2f", cargoTarjeta));
+
+        double totalFinal = subtotal + impuestos + cargoTarjeta;
+        modelo.getVista().txtTotalFinal.setText(String.format("%.2f", totalFinal));
+    }
+
     @Override
     public void windowOpened(WindowEvent e) {
         if (e.getComponent().equals(modelo.getVista())) {
-            DefaultTableModel model = impVenta.modeloProducto(); 
+            DefaultTableModel model = impVenta.modeloProducto();
             modelo.getVista().txtCargosAdicionales.setText("0");
             model.addColumn("Seleccionar");
             modelo.getVista().tblMostrarProductos.setModel(model);
 
-            JComboBox<String> comboBoxMetodoPago = new JComboBox<>(new String[]{"efectivo", "tarjeta"});
+            modelo.getVista().cmbMetodoPago.addItemListener(a -> {
+                if (a.getStateChange() == ItemEvent.SELECTED) {
+                    recalcularTotales();
+                }
+            });
+            modelo.getVista().cmbClientes.setModel(impVenta.mostrarCliente());
+            modelo.getVista().txtUsuario.setText(UsuarioActual.usuarioActual);
 
             TableColumn productColumn = modelo.getVista().tblMostrarProductos.getColumnModel().getColumn(model.getColumnCount() - 1);
-            productColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, comboBoxMetodoPago));
-            productColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, comboBoxMetodoPago)); 
-
-            modelo.getVista().cmbClientes.setModel(impVenta.mostrarCliente());
+            productColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
+            productColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
 
             DefaultTableModel detalleModel = new DefaultTableModel();
             detalleModel.setColumnIdentifiers(new Object[]{"ID Producto", "Nombre", "Cantidad", "Precio Unitario", "Total Línea", "Eliminar"});
             modelo.getVista().tblListaProductos.setModel(detalleModel);
 
-            modelo.getVista().txtUsuario.setText(UsuarioActual.usuarioActual);
-
             TableColumn detailColumn = modelo.getVista().tblListaProductos.getColumnModel().getColumn(5);
-            detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, comboBoxMetodoPago)); 
-            detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, comboBoxMetodoPago)); 
+            detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
+            detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
         }
     }
 

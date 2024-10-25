@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import proyectofinal.interfaces.IVentas;
+import proyectofinal.modelos.ModeloConsultaVenta;
 import proyectofinal.modelos.ModeloVenta;
 import proyectofinal.modelos.ProductoTableModel;
 import proyectofinal.sql.QuerysVentas;
@@ -20,7 +21,7 @@ import proyectofinal.sql.QuerysClientes;
  *
  * @author sebas
  */
-public class VentasImp implements IVentas{
+public class VentasImp implements IVentas {
 
     Conector conector = new Conector();
     QuerysVentas sql = new QuerysVentas();
@@ -47,7 +48,7 @@ public class VentasImp implements IVentas{
             int filasInsertadas = ps.executeUpdate();
             if (filasInsertadas > 0) {
                 ResultSet res = ps.getGeneratedKeys();
-                if(res.next()){
+                if (res.next()) {
                     resultado = res.getInt(1);
                 }
             }
@@ -133,8 +134,52 @@ public class VentasImp implements IVentas{
 
     @Override
     public DefaultTableModel modeloVenta(int factura) {
-        return null;
+        DefaultTableModel modelo = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        // Cambia los columnIdentifiers para que coincidan con los datos que se están agregando
+        modelo.setColumnIdentifiers(new Object[]{
+            "Factura", // no_factura
+            "Usuario", // usuario_user
+            "Cliente NIT", // cliente_nit
+            "Fecha Venta", // fecha_venta
+            "Total Sin Impuestos", // total_sin_impuestos
+            "Total Con Impuestos", // total_con_impuestos
+            "Cargo Tarjeta", // cargo_tarjeta
+            "Total Venta", // total_venta
+            "Método de Pago" // metodo_pago
+        });
 
+        conector.conectar();
+
+        try {
+            ps = conector.preparar(sql.getBUSCAR_VENTA_POR_FACTURA());
+            ps.setInt(1, factura);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getString("no_factura"),
+                    rs.getString("usuario_user"),
+                    rs.getString("cliente_nit"),
+                    rs.getString("fecha_venta"),
+                    rs.getString("total_sin_impuestos"),
+                    rs.getString("total_con_impuestos"),
+                    rs.getString("cargo_tarjeta"),
+                    rs.getString("total_venta"),
+                    rs.getString("metodo_pago")
+                });
+            }
+            conector.desconectar();
+
+        } catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error", 1);
+            conector.desconectar();
+        }
+        return modelo;
     }
 
     @Override
@@ -233,6 +278,86 @@ public class VentasImp implements IVentas{
                     rs.getString("precio_normal"),
                     rs.getString("stock_producto")
                 });
+            }
+            conector.desconectar();
+
+        } catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error", 1);
+            conector.desconectar();
+        }
+        return modelo;
+    }
+
+    @Override
+    public DefaultTableModel modeloConsultaVenta() {
+        DefaultTableModel modelo = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        // Cambia los columnIdentifiers para que coincidan con los datos que se están agregando
+        modelo.setColumnIdentifiers(new Object[]{
+            "Factura", // no_factura
+            "Usuario", // usuario_user
+            "Cliente NIT", // cliente_nit
+            "Fecha Venta", // fecha_venta
+            "Total Sin Impuestos", // total_sin_impuestos
+            "Total Con Impuestos", // total_con_impuestos
+            "Cargo Tarjeta", // cargo_tarjeta
+            "Total Venta", // total_venta
+            "Método de Pago" // metodo_pago
+        });
+
+        conector.conectar();
+
+        try {
+            ps = conector.preparar(sql.getSELECCIONAR_TODAS_LAS_VENTAS());
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getString("no_factura"),
+                    rs.getString("usuario_user"),
+                    rs.getString("cliente_nit"),
+                    rs.getString("fecha_venta"),
+                    rs.getString("total_sin_impuestos"),
+                    rs.getString("total_con_impuestos"),
+                    rs.getString("cargo_tarjeta"),
+                    rs.getString("total_venta"),
+                    rs.getString("metodo_pago")
+                });
+            }
+            conector.desconectar();
+
+        } catch (SQLException ex) {
+            conector.mensaje(ex.getMessage(), "Error", 1);
+            conector.desconectar();
+        }
+        return modelo;
+    }
+
+    @Override
+    public ModeloConsultaVenta mostrarConsultaVenta(int factura) {
+        ModeloConsultaVenta modelo = new ModeloConsultaVenta();
+        conector.conectar();
+
+        try {
+            ps = conector.preparar(sql.getBUSCAR_VENTA_POR_FACTURA());
+            ps.setInt(1, factura);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                modelo.setNoFactura(rs.getInt("no_factura")); // Cambiar al nombre correcto de la columna
+                modelo.setUser(rs.getString("usuario_user")); // Cambiar al nombre correcto de la columna
+                modelo.setNit(rs.getString("cliente_nit")); // Cambiar al nombre correcto de la columna
+                modelo.setFechaVenta(rs.getString("fecha_venta")); // Cambiar al nombre correcto de la columna
+                modelo.setSubtotal(rs.getDouble("total_sin_impuestos")); // Cambiar al nombre correcto de la columna
+                modelo.setImpuestos(rs.getDouble("total_con_impuestos")); // Cambiar al nombre correcto de la columna
+                modelo.setCargoTarjeta(rs.getDouble("cargo_tarjeta")); // Cambiar al nombre correcto de la columna
+                modelo.setTotalVenta(rs.getDouble("total_venta")); // Cambiar al nombre correcto de la columna
+                modelo.setMetodoPago(rs.getString("metodo_pago"));
             }
             conector.desconectar();
 
