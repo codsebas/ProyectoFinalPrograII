@@ -6,10 +6,12 @@ package proyectofinal.vistas;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import proyectofinal.dao.InventarioDao;
 import proyectofinal.dao.ProductoDao;
 import proyectofinal.modelos.ModeloProducto;
+import proyectofinal.modelos.UsuarioActual;
 
 /**
  *
@@ -17,16 +19,14 @@ import proyectofinal.modelos.ModeloProducto;
  */
 public class VistaInventario extends javax.swing.JFrame {
 
-    /**
-     * Creates new form VistaInventario
-     */
+   
     public VistaInventario() {
         initComponents();
         setTitle("Inventario");
          setLocationRelativeTo(null);
          cargarInventario();
     }
-      // Instancia del DAO de inventarios
+     
     InventarioDao inventarioDao = new InventarioDao();
 
     // Método para cargar los productos y su stock en la tabla
@@ -34,7 +34,7 @@ public class VistaInventario extends javax.swing.JFrame {
         DefaultTableModel tabla = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Retorna false para que ninguna celda sea editable
+               
                 return false;
             }
         };
@@ -43,13 +43,13 @@ public class VistaInventario extends javax.swing.JFrame {
         tabla.addColumn("Nombre Producto");
         tabla.addColumn("Stock");
 
-        // Aquí deberías tener acceso a los productos, por ejemplo desde ProductoDao
+      
         ProductoDao productoDao = new ProductoDao();
         List<ModeloProducto> productos = productoDao.getProductos();
 
-        // Iterar sobre los productos para llenar la tabla
+       
         for (ModeloProducto producto : productos) {
-            // Obtener el stock actual del producto desde InventarioDao
+            
             int stockActual = inventarioDao.getStock(producto.getIdProducto());
 
             // Añadir una fila a la tabla con el ID, nombre del producto y el stock actual
@@ -60,7 +60,7 @@ public class VistaInventario extends javax.swing.JFrame {
             });
         }
 
-        // Asignar el modelo de tabla a la tabla de la vista
+       
         tblInventario.setModel(tabla);
     }
 
@@ -82,6 +82,11 @@ public class VistaInventario extends javax.swing.JFrame {
         cargarInventario();
     }
      
+     public void limpiar(){
+         txtCantidadProducto.setText("");
+         txtNombreProducto.setText("");
+     }
+     
      
      private void seleccionarDatosTabla(){
          
@@ -100,29 +105,33 @@ public class VistaInventario extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnRegistarMod = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        btnAgregar = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         txtCantidadProducto = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblInventario = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btnRegresar = new javax.swing.JButton();
         txtNombreProducto = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        btnRegistarMod.setText("Modificar");
-        btnRegistarMod.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegistarModActionPerformed(evt);
+                btnAgregarActionPerformed(evt);
             }
         });
 
-        btnCancelar.setText("Cancelar");
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
 
-        jLabel1.setText("Cantidad a agregar:");
-
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel2.setText("Código Producto:");
 
         txtCantidadProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -149,64 +158,65 @@ public class VistaInventario extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tblInventario);
 
-        jButton1.setText("Regresar al Menu ");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnRegresar.setText("Regresar al Menu ");
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnRegresarActionPerformed(evt);
             }
         });
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setText("Cantidad:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(57, 57, 57)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtNombreProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                                .addComponent(txtCantidadProducto)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(208, 208, 208)
+                            .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(57, 57, 57)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel1))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(103, 103, 103)
-                                        .addComponent(txtNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGap(97, 97, 97)
-                                        .addComponent(txtCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(208, 208, 208)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
-                        .addComponent(btnRegistarMod, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(230, 230, 230)))
+                        .addGap(77, 77, 77)
+                        .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 203, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(105, 105, 105)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(105, 105, 105)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(117, 117, 117)
+                        .addComponent(txtNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(78, 78, 78)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(87, 87, 87)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(71, 71, 71)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegistarMod, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(183, 183, 183)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                    .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(202, 202, 202)
+                .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 579, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -220,42 +230,69 @@ public class VistaInventario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadProductoActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         // TODO add your handling code here:
-        
-        VistaMenu menu = new VistaMenu("supervisor");
+         if (UsuarioActual.usuarioActual != null && UsuarioActual.rolActual != null) {
+        // Usamos el rol almacenado en UsuarioActual
+        VistaMenu menu = new VistaMenu(UsuarioActual.rolActual);
         this.setVisible(false);
         menu.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    } else {
+        JOptionPane.showMessageDialog(this, "Error: No se ha iniciado sesión.");
+    }
+    }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void tblInventarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblInventarioMouseClicked
 
     seleccionarDatosTabla();        // TODO add your handling code here:
     }//GEN-LAST:event_tblInventarioMouseClicked
 
-    private void btnRegistarModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistarModActionPerformed
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
-     int fila = tblInventario.getSelectedRow();
+     // Verificar si hay una fila seleccionada en la tabla
+    int fila = tblInventario.getSelectedRow();
     if (fila >= 0) {
-        int productoId = (int) tblInventario.getValueAt(fila, 0); // ID del producto
-        // Obtener la cantidad a sumar del campo de texto
+        // Verificar que el campo de cantidad no esté vacío
+        if (txtCantidadProducto.getText().trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Ingrese una cantidad", "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Verificar que la cantidad ingresada sea un número válido
         int cantidadSumar;
         try {
-            cantidadSumar = Integer.parseInt(txtCantidadProducto.getText()); // Convertir a entero
-            // Llamar al método agregarStock del DAO para actualizar el stock
-            inventarioDao.agregarStock(productoId, cantidadSumar, "Rebastecimiento");
-            // Refrescar la tabla después de la actualización
-            cargarInventario();
+            cantidadSumar = Integer.parseInt(txtCantidadProducto.getText().trim()); // Convertir a entero
+            // Verificar que la cantidad sea mayor a 0
+            if (cantidadSumar <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "La cantidad debe ser mayor a 0", "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
         } catch (NumberFormatException e) {
             // Manejar el error si la cantidad no es un número válido
             javax.swing.JOptionPane.showMessageDialog(this, "Ingrese una cantidad válida", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        // Si pasa todas las validaciones, proceder a actualizar el stock
+        int productoId = (int) tblInventario.getValueAt(fila, 0); // ID del producto
+        // Llamar al método agregarStock del DAO para actualizar el stock
+        inventarioDao.agregarStock(productoId, cantidadSumar, "Rebastecimiento");
+        
+        // Refrescar la tabla después de la actualización
+        cargarInventario();
+
     } else {
-        javax.swing.JOptionPane.showMessageDialog(this, "Seleccione un producto para modificar el stock", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+        // Si no hay fila seleccionada, mostrar mensaje de advertencia
+        javax.swing.JOptionPane.showMessageDialog(this, "Seleccione un producto para modificar el stock", "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
     }
 
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
-    }//GEN-LAST:event_btnRegistarModActionPerformed
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+        limpiar();
+        
+    }//GEN-LAST:event_btnLimpiarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -293,11 +330,11 @@ public class VistaInventario extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnRegistarMod;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnRegresar;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblInventario;
     private javax.swing.JTextField txtCantidadProducto;

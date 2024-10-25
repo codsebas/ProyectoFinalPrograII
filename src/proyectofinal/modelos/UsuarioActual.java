@@ -11,5 +11,6 @@ package proyectofinal.modelos;
 public class UsuarioActual {
     
     public static String usuarioActual;
+    public static String rolActual;
 }
 

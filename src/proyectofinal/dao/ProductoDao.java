@@ -16,7 +16,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -65,36 +68,65 @@ public class ProductoDao {
     }
 
     // Agregar un nuevo producto
-   public void addProducto(String nombreProducto, int idCategoria, double precioNormal, double precioPromocion,
-                        String descripcion, String rutaImagen) {
-    
-String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_normal, precio_promocion, descripcion, ruta_imagen_producto) VALUES (?, ?, ?, ?, ?, ?)";
-    
-    try (PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-        stmt.setString(1, nombreProducto);
-        stmt.setInt(2, idCategoria);
-        stmt.setDouble(3, precioNormal);
-        stmt.setDouble(4, precioPromocion);
-        stmt.setString(5, descripcion);
-        
-        if (rutaImagen != null && !rutaImagen.isEmpty()) {
-            stmt.setString(6, rutaImagen); 
-        } else {
-            stmt.setNull(6, java.sql.Types.VARCHAR); 
-        }
+    public void addProducto(String nombreProducto, int idCategoria, double precioNormal, double precioPromocion,
+            String descripcion, String rutaImagen) {
 
-        int filasAfectadas = stmt.executeUpdate();
-        System.out.println("Filas afectadas: " + filasAfectadas);
-        if (filasAfectadas > 0) {
-            System.out.println("PRODUCTO AGREGADO");
+        String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_normal, precio_promocion, descripcion, ruta_imagen_producto) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, nombreProducto);
+            stmt.setInt(2, idCategoria);
+            stmt.setDouble(3, precioNormal);
+            stmt.setDouble(4, precioPromocion);
+            stmt.setString(5, descripcion);
+
+            if (rutaImagen != null && !rutaImagen.isEmpty()) {
+                String projectDirectory = System.getProperty("user.dir");
+            String imagenDir = projectDirectory + File.separator + "imagenes_productos";
+            File dir = new File(imagenDir);
+            if (!dir.exists()) {
+                dir.mkdirs();  // Crear la carpeta si no existe
+            }
             
-            // Obtener el ID generado para el nuevo producto
+            // Guardar la imagen en la carpeta del proyecto
+            String nombreImagen = nombreProducto + ".png"; // O usa otro criterio para nombrar la imagen
+            File imagenFile = new File(dir, nombreImagen);
+            Files.copy(Paths.get(rutaImagen), imagenFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            stmt.setString(6, "imagenes_productos/" + nombreImagen); // Ruta relativa para almacenar en la base de datos
+        } else {
+            stmt.setNull(6, java.sql.Types.VARCHAR);
+        }
+        
+            
+            
+            
+       
+            int filasAfectadas = stmt.executeUpdate();
+            System.out.println("Filas afectadas: " + filasAfectadas);
+            if (filasAfectadas > 0) {
+                System.out.println("PRODUCTO AGREGADO");
+
+                // Obtener el ID generado para el nuevo producto
                 ResultSet generatedKeys = stmt.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     int idProducto = generatedKeys.getInt(1);
 
-                    // Generar el código de barras
-                    String barcodeFilePath = "C:\\Users\\gerso\\Downloads\\Codigos de Barras\\" + nombreProducto + "_" + idProducto + ".png";
+                    String projectDirectory = System.getProperty("user.dir");
+
+// Ruta de la carpeta "codigos_barras"
+                    File barcodeDir = new File(projectDirectory + File.separator + "codigos_barras");
+
+// Si la carpeta no existe, se crea
+                    if (!barcodeDir.exists()) {
+                        if (barcodeDir.mkdirs()) {
+                            System.out.println("Directorio 'codigos_barras' creado exitosamente.");
+                        } else {
+                            System.out.println("Error al crear el directorio 'codigos_barras'.");
+                        }
+                    }
+
+// Generar la ruta completa del archivo de código de barras
+                    String barcodeFilePath = barcodeDir.getPath() + File.separator + nombreProducto + "_" + idProducto + ".png";
                     try {
                         generarCodigoBarras(String.valueOf(idProducto), barcodeFilePath);
                         System.out.println("Código de barras generado en: " + barcodeFilePath);
@@ -121,12 +153,23 @@ String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_norma
             } else {
                 System.out.println("No se insertó ningún producto.");
             }
+            
         } catch (SQLException e) {
             System.out.println("Error addProducto: " + e.getMessage());
+        
+        } catch (IOException e){
+            System.out.println("Error al copiar la imagen: "+ e.getMessage());
         }
-    }
-   
- public static void generarCodigoBarras(String texto, String rutaArchivo) {
+        
+        
+        }
+        
+        
+        
+        
+    
+
+    public static void generarCodigoBarras(String texto, String rutaArchivo) {
         try {
             // Parámetros para el código de barras (tipo CODE_128)
             BitMatrix matrix = new MultiFormatWriter().encode(texto, BarcodeFormat.CODE_128, 300, 150);
@@ -142,7 +185,6 @@ String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_norma
         }
     }
 
-
     private void agregarStockInicial(int productoId) {
         String sqlInsertInventario = "INSERT INTO inventarios (producto_id, stock_producto) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sqlInsertInventario)) {
@@ -154,9 +196,6 @@ String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_norma
             System.out.println("Error al agregar stock inicial: " + e.getMessage());
         }
     }
-
-   
-
 
     public ModeloProducto getOneProducto(int pIdProducto) {
         ModeloProducto producto = null;
@@ -229,4 +268,25 @@ String sql = "INSERT INTO productos (nombre_producto, categoria_id, precio_norma
         }
     }
 
+    public boolean existeProductoConNombre(String nombreProducto) {
+        String sql = "SELECT COUNT(*) FROM productos WHERE nombre_producto = ?";
+        boolean existe = false;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, nombreProducto); // Asignar el nombre del producto al query
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1); // Obtener el resultado de la consulta
+                    if (count > 0) {
+                        existe = true; // Si el conteo es mayor a 0, el producto ya existe
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en existeProductoConNombre: " + e.getMessage());
+        }
+
+        return existe;
+    }
 }
