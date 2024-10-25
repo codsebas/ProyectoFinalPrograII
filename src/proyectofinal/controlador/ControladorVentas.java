@@ -4,13 +4,28 @@
  */
 package proyectofinal.controlador;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -22,6 +37,8 @@ import proyectofinal.modelos.ModeloVenta;
 import proyectofinal.implementacion.DetalleVentasImp;
 import proyectofinal.implementacion.VentasImp;
 import proyectofinal.modelos.ButtonRenderer;
+import proyectofinal.sql.Conector;
+import proyectofinal.sql.QuerysReportes;
 import proyectofinal.vistas.VistaClientes;
 
 /**
@@ -122,6 +139,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
                 resultadoDetalle = impDetVenta.insertarDetalleVenta(modeloDetalle);
                 if (resultadoDetalle) {
                     //Logica de Reporte UwU
+                    pdfFactura();
                     JOptionPane.showMessageDialog(null, "Se ha insertado todo sastifactoriamente", "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
                     limpiar();
                 } else {
@@ -156,6 +174,98 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         }
     }
 
+    
+    public void pdfFactura (){
+        
+        try {
+        Conector conector = new Conector();
+        PreparedStatement ps;
+        QuerysReportes sql = new QuerysReportes();
+        ResultSet rs;
+             
+        String carpetaDescargas = System.getProperty("user.home") + File.separator + "Downloads";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = formatter.format(new Date());
+        String nombreArchivo = carpetaDescargas + File.separator + "Factura" + timestamp + ".pdf";
+
+        FileOutputStream archivo = new FileOutputStream(nombreArchivo);
+        Document documento = new Document(PageSize.A4.rotate());
+        PdfWriter.getInstance(documento, archivo);
+        documento.open();
+
+        System.out.println("Ruta del archivo PDF: " + nombreArchivo);
+
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String currentDate = formatter.format(new Date());
+        Paragraph dateParagraph = new Paragraph("Fecha: " + currentDate);
+        dateParagraph.setAlignment(Paragraph.ALIGN_RIGHT);
+        documento.add(dateParagraph);
+
+        com.itextpdf.text.Font tituloFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+        Paragraph titulo = new Paragraph("Factura", tituloFont);
+        titulo.setAlignment(Element.ALIGN_CENTER);
+        documento.add(titulo);
+        documento.add(new Paragraph(" ")); // Espacio en blanco
+
+        com.itextpdf.text.Font contenidoFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+        com.itextpdf.text.Font encabezadoFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
+        
+        PdfPTable tabla = new PdfPTable(11); // Número de columnas
+        tabla.setWidthPercentage(100); // Ancho de la tabla
+        
+        float[] columnWidths = {3f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f};
+        tabla.setWidths(columnWidths);
+
+        PdfPCell cell;
+        String[] headers = {"no factura", "NIT", "fecha venta ", "total sin imp.", "total con imp.", 
+                            "con tarjeta", "Total de venta", "metodo de pago", 
+                            "cantidad producto", "precio unitario","total linea"};
+        for (String header : headers) {
+            cell = new PdfPCell(new Phrase(header, encabezadoFont));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBorderWidth(1);
+            tabla.addCell(cell);
+        }
+
+        double totalVentas = 0;
+
+        conector.conectar();
+        try {
+    ps = conector.preparar(sql.getREORTEPDF());
+    rs = ps.executeQuery();
+
+    if (rs.next()) {
+        do {
+            // Agregar filas de datos
+            for (int i = 1; i <= 10; i++) {
+                cell = new PdfPCell(new Phrase(rs.getString(i), contenidoFont));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setPadding(5);
+                tabla.addCell(cell);
+            }
+        } while (rs.next());
+        
+        // No se agrega la fila con el total de ventas
+        documento.add(tabla);
+    }
+    conector.desconectar();
+    documento.close();
+
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+        documento.close();
+        archivo.close();
+
+        JOptionPane.showMessageDialog(null, "Guardado en: " + nombreArchivo, "Reporte generado exitosamente", JOptionPane.INFORMATION_MESSAGE);
+    } catch (Exception e) {
+        e.printStackTrace(); // Mostrar el error en la consola
+        JOptionPane.showMessageDialog(null, "Ocurrió un error al generar el PDF", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+        
+    }
     @Override
     public void windowOpened(WindowEvent e) {
         if (e.getComponent().equals(modelo.getVista())) {

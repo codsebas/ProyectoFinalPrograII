@@ -73,7 +73,7 @@ public class Reportes implements ActionListener {
         PreparedStatement ps;
         QuerysReportes sql = new QuerysReportes();
         ResultSet rs;
-
+             
         String carpetaDescargas = System.getProperty("user.home") + File.separator + "Downloads";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timestamp = formatter.format(new Date());
