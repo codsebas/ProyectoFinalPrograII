@@ -291,9 +291,9 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             tabla.setWidths(columnWidths);
 
             PdfPCell cell;
-            String[] headers = {"no factura", "NIT", "fecha venta ", "total sin imp.", "total con imp.",
-                "con tarjeta", "Total de venta", "metodo de pago",
-                "cantidad producto", "precio unitario", "total linea"};
+            String[] headers = {"no factura", "NIT", "fecha venta ", "cantidad producto.", "precio unitario","total linea",
+                 "cargo tarjeta", "metodo de pago",
+                "total sin imp.", "impuestos","total venta"};
             for (String header : headers) {
                 cell = new PdfPCell(new Phrase(header, encabezadoFont));
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -301,16 +301,16 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
                 tabla.addCell(cell);
             }
 
-            double totalVentas = 0;
+            
 
             conector.conectar();
             try {
-                ps = conector.preparar(sql.getREORTEPDF());
+                ps = conector.preparar(sql.getReporteFactura());
                 rs = ps.executeQuery();
 
                 if (rs.next()) {
                     do {
-                        for (int i = 1; i <= 10; i++) {
+                        for (int i = 1; i <= 11; i++) {
                             cell = new PdfPCell(new Phrase(rs.getString(i), contenidoFont));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPadding(5);
