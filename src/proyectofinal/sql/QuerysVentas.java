@@ -11,7 +11,7 @@ package proyectofinal.sql;
 public class QuerysVentas {
 
     private final String SELECCIONAR_TODAS_LAS_VENTAS = "SELECT * FROM ventas";
-    private final String BUSCAR_VENTA_POR_FACTURA = "SELECT * FROM ventas WHERE no_factura = ?";
+    public final String BUSCAR_VENTA_POR_FACTURA = "SELECT * FROM ventas WHERE no_factura = ?";
     private final String ACTUALIZAR_VENTA = "UPDATE ventas SET total_venta = ?, metodo_pago = ? WHERE no_factura = ?";
     private final String ELIMINAR_VENTA = "DELETE FROM ventas WHERE no_factura = ?";
     private final String INSERTAR_VENTA = "INSERT INTO ventas (usuario_user, cliente_nit, total_sin_impuestos, total_con_impuestos, cargo_tarjeta, total_venta, metodo_pago) VALUES (?, ?, ?, ?, ?, ?, ?)";

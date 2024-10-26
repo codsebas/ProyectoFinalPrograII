@@ -141,7 +141,7 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
             totalCargo = total * cargoTarjeta;
             total += totalCargo;
         } else {
-            total = subtotal + impuestos; // Sin cargo adicional
+            total = subtotal + impuestos; 
             totalCargo = 0;
         }
         System.out.println("Total de cargo por tarjeta");

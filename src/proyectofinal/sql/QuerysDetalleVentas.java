@@ -3,7 +3,7 @@ package proyectofinal.sql;
 public class QuerysDetalleVentas {
 
     private final String SELECCIONAR_TODOS_LOS_DETALLES_VENTAS = "SELECT * FROM detalle_ventas";
-    private final String BUSCAR_DETALLES_POR_FACTURA = "SELECT * FROM detalle_ventas WHERE factura_no = ?";
+    public final String BUSCAR_DETALLES_POR_FACTURA = "SELECT * FROM detalle_ventas WHERE factura_no = ?";
     private final String ACTUALIZAR_DETALLE_VENTA = "UPDATE detalle_ventas SET cantidad_producto = ?, total_linea = ? WHERE factura_no = ? AND num_linea = ?";
     private final String ELIMINAR_DETALLE_VENTA = "DELETE FROM detalle_ventas WHERE factura_no = ? AND num_linea = ?";
     private final String INSERTAR_DETALLE_VENTA = "INSERT INTO detalle_ventas (factura_no, num_linea, producto_id, cantidad_producto, precio_unitario, total_linea) VALUES (?, ?, ?, ?, ?, ?)";

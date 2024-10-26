@@ -45,6 +45,8 @@ import proyectofinal.sql.Conector;
 import proyectofinal.sql.QuerysReportes;
 import proyectofinal.vistas.VistaClientes;
 import proyectofinal.modelos.UsuarioActual;
+import proyectofinal.sql.QuerysVentas;
+import proyectofinal.sql.QuerysDetalleVentas;
 
 /**
  *
@@ -55,6 +57,8 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
     ModeloVenta modelo;
     DetalleVentasImp impDetVenta = new DetalleVentasImp();
     VentasImp impVenta = new VentasImp();
+    QuerysVentas sqlventas = new QuerysVentas();
+    QuerysDetalleVentas sqldetalles = new QuerysDetalleVentas();
 
     public ControladorVentas(ModeloVenta modelo) {
         this.modelo = modelo;
@@ -96,36 +100,35 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
     }
 
     private void vaciarLista() {
-    DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel();
-    int rowCount = detalleModel.getRowCount();
-    for (int i = 0; i < rowCount; i++) {
-        String idProducto = detalleModel.getValueAt(i, 0).toString(); 
-        int cantidad = Integer.parseInt(detalleModel.getValueAt(i, 2).toString());
-        
-        DefaultTableModel mostrarModel = (DefaultTableModel) modelo.getVista().tblMostrarProductos.getModel();
-        int mostrarRowCount = mostrarModel.getRowCount();
+        DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaProductos.getModel();
+        int rowCount = detalleModel.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            String idProducto = detalleModel.getValueAt(i, 0).toString();
+            int cantidad = Integer.parseInt(detalleModel.getValueAt(i, 2).toString());
 
-        for (int j = 0; j < mostrarRowCount; j++) {
-            String idProductoMostrar = mostrarModel.getValueAt(j, 0).toString(); // ID en la tabla de mostrar
+            DefaultTableModel mostrarModel = (DefaultTableModel) modelo.getVista().tblMostrarProductos.getModel();
+            int mostrarRowCount = mostrarModel.getRowCount();
 
-            if (idProducto.equals(idProductoMostrar)) {
-                int stockActual = Integer.parseInt(mostrarModel.getValueAt(j, 3).toString());
-                mostrarModel.setValueAt(stockActual + cantidad, j, 3); // Aumentar el stock
-                break;
+            for (int j = 0; j < mostrarRowCount; j++) {
+                String idProductoMostrar = mostrarModel.getValueAt(j, 0).toString(); // ID en la tabla de mostrar
+
+                if (idProducto.equals(idProductoMostrar)) {
+                    int stockActual = Integer.parseInt(mostrarModel.getValueAt(j, 3).toString());
+                    mostrarModel.setValueAt(stockActual + cantidad, j, 3); // Aumentar el stock
+                    break;
+                }
             }
         }
+
+        detalleModel.setRowCount(0);
+
+        detalleModel.setColumnIdentifiers(new Object[]{"ID Producto", "Nombre", "Cantidad", "Precio Unitario", "Total Línea", "Eliminar"});
+        modelo.getVista().tblListaProductos.setModel(detalleModel);
+
+        TableColumn detailColumn = modelo.getVista().tblListaProductos.getColumnModel().getColumn(5);
+        detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
+        detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
     }
-
-    detalleModel.setRowCount(0);
-    
-    detalleModel.setColumnIdentifiers(new Object[]{"ID Producto", "Nombre", "Cantidad", "Precio Unitario", "Total Línea", "Eliminar"});
-    modelo.getVista().tblListaProductos.setModel(detalleModel);
-    
-    TableColumn detailColumn = modelo.getVista().tblListaProductos.getColumnModel().getColumn(5);
-    detailColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
-    detailColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
-}
-
 
     public List<ModeloDetalleVenta> agregarDetalleAModelo(JTable tblListaProductos, int numFactura) {
         List<ModeloDetalleVenta> detallesVenta = new ArrayList<>();
@@ -150,7 +153,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         return detallesVenta;
     }
 
-    @Override   
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(modelo.getVista().btnAgregarCliente.getActionCommand())) { //Llama a mantenimiento de clientes
@@ -208,7 +211,7 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
                         if (impDetVenta.insertarDetalleInventario(modeloInventario)) {
                             System.out.println("Detalle de inventario insertado correctamente");
-                            pdfFactura();
+                            pdfFactura(numeroFactura);
                             JOptionPane.showMessageDialog(null, "Se ha insertado todo satisfactoriamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
                             limpiar();
                             actualizar();
@@ -249,18 +252,18 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         }
     }
 
-    public void pdfFactura() {
-
+    public void pdfFactura(int numeroFactura) {
         try {
             Conector conector = new Conector();
-            PreparedStatement ps;
+            PreparedStatement psVenta, psDetalle;
             QuerysReportes sql = new QuerysReportes();
-            ResultSet rs;
+            ResultSet rsVenta, rsDetalle;
 
+            // Configuración de archivo PDF
             String carpetaDescargas = System.getProperty("user.home") + File.separator + "Downloads";
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String timestamp = formatter.format(new Date());
-            String nombreArchivo = carpetaDescargas + File.separator + "Factura" + timestamp + ".pdf";
+            String nombreArchivo = carpetaDescargas + File.separator + "Factura_" + numeroFactura + "_" + timestamp + ".pdf";
 
             FileOutputStream archivo = new FileOutputStream(nombreArchivo);
             Document documento = new Document(PageSize.A4.rotate());
@@ -271,62 +274,66 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
             formatter = new SimpleDateFormat("dd/MM/yyyy");
             String currentDate = formatter.format(new Date());
-            Paragraph dateParagraph = new Paragraph("Fecha: " + currentDate);
+            Paragraph dateParagraph = new Paragraph("Fecha de emisión: " + currentDate);
             dateParagraph.setAlignment(Paragraph.ALIGN_RIGHT);
             documento.add(dateParagraph);
 
+            // Encabezado de la factura
             com.itextpdf.text.Font tituloFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
             Paragraph titulo = new Paragraph("Factura", tituloFont);
             titulo.setAlignment(Element.ALIGN_CENTER);
             documento.add(titulo);
-            documento.add(new Paragraph(" ")); // Espacio en blanco
+            documento.add(new Paragraph(" "));
 
             com.itextpdf.text.Font contenidoFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
             com.itextpdf.text.Font encabezadoFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
 
-            PdfPTable tabla = new PdfPTable(11); // Número de columnas
-            tabla.setWidthPercentage(100); // Ancho de la tabla
-
-            float[] columnWidths = {3f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f};
-            tabla.setWidths(columnWidths);
-
-            PdfPCell cell;
-            String[] headers = {"no factura", "NIT", "fecha venta ", "cantidad producto.", "precio unitario","total linea",
-                 "cargo tarjeta", "metodo de pago",
-                "total sin imp.", "impuestos","total venta"};
-            for (String header : headers) {
-                cell = new PdfPCell(new Phrase(header, encabezadoFont));
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell.setBorderWidth(1);
-                tabla.addCell(cell);
-            }
-
-            
-
             conector.conectar();
-            try {
-                ps = conector.preparar(sql.getReporteFactura());
-                rs = ps.executeQuery();
 
-                if (rs.next()) {
-                    do {
-                        for (int i = 1; i <= 11; i++) {
-                            cell = new PdfPCell(new Phrase(rs.getString(i), contenidoFont));
-                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                            cell.setPadding(5);
-                            tabla.addCell(cell);
-                        }
-                    } while (rs.next());
+            // Consultar datos de la tabla ventas
+            psVenta = conector.preparar(sqlventas.BUSCAR_VENTA_POR_FACTURA);
+            psVenta.setInt(1, numeroFactura);
+            rsVenta = psVenta.executeQuery();
 
-                    documento.add(tabla);
-                }
-                conector.desconectar();
-                documento.close();
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (rsVenta.next()) {
+                Paragraph datosVenta = new Paragraph("Número de Factura: " + rsVenta.getInt("no_factura")
+                        + "\nCliente NIT: " + rsVenta.getString("cliente_nit")
+                        + "\nFecha de Venta: " + rsVenta.getTimestamp("fecha_venta")
+                        + "\nMétodo de Pago: " + rsVenta.getString("metodo_pago")
+                        + "\nTotal Venta: Q" + rsVenta.getBigDecimal("total_venta"), contenidoFont);
+                documento.add(datosVenta);
+                documento.add(new Paragraph(" "));
             }
 
+            // Tabla de detalles de la factura
+            PdfPTable tablaDetalle = new PdfPTable(4);
+            tablaDetalle.setWidthPercentage(100);
+            float[] columnWidths = {2f, 2f, 2f, 2f};
+            tablaDetalle.setWidths(columnWidths);
+
+            String[] headersDetalle = {"Producto ID", "Cantidad", "Precio Unitario", "Total Línea"};
+            for (String header : headersDetalle) {
+                PdfPCell cell = new PdfPCell(new Phrase(header, encabezadoFont));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tablaDetalle.addCell(cell);
+            }
+
+            // Consultar detalles de la venta
+            psDetalle = conector.preparar(sqldetalles.BUSCAR_DETALLES_POR_FACTURA);
+            psDetalle.setInt(1, numeroFactura);
+            rsDetalle = psDetalle.executeQuery();
+
+            while (rsDetalle.next()) {
+                tablaDetalle.addCell(new Phrase(rsDetalle.getString("producto_id"), contenidoFont));
+                tablaDetalle.addCell(new Phrase(rsDetalle.getString("cantidad_producto"), contenidoFont));
+                tablaDetalle.addCell(new Phrase("Q" + rsDetalle.getBigDecimal("precio_unitario"), contenidoFont));
+                tablaDetalle.addCell(new Phrase("Q" + rsDetalle.getBigDecimal("total_linea"), contenidoFont));
+            }
+
+            documento.add(tablaDetalle);
+
+            // Cerrar conexiones y archivo
+            conector.desconectar();
             documento.close();
             archivo.close();
 
@@ -335,7 +342,6 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Ocurrió un error al generar el PDF", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     private void recalcularTotales() {
