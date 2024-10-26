@@ -3,8 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package proyectofinal.vistas;
+import javax.swing.JOptionPane;
 import proyectofinal.controlador.ControladorClientes;
 import proyectofinal.modelos.ModeloCliente;
+import proyectofinal.modelos.UsuarioActual;
 /**
  *
  * @author sebas
@@ -125,6 +127,11 @@ public class VistaClientes extends javax.swing.JFrame {
 
         btnRegresar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnRegresar.setText("Regresar");
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -250,6 +257,17 @@ public class VistaClientes extends javax.swing.JFrame {
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        if (UsuarioActual.usuarioActual != null && UsuarioActual.rolActual != null) {
+            // Usamos el rol almacenado en UsuarioActual
+            VistaMenu menu = new VistaMenu(UsuarioActual.rolActual);
+            this.setVisible(false);
+            menu.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: No se ha iniciado sesión.");
+        } 
+    }//GEN-LAST:event_btnRegresarActionPerformed
 
     /**
      * @param args the command line arguments

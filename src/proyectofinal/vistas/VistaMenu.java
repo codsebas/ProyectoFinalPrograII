@@ -89,6 +89,11 @@ public class VistaMenu extends javax.swing.JFrame {
 
         btnVistaClientes.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnVistaClientes.setText("CLIENTES");
+        btnVistaClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVistaClientesActionPerformed(evt);
+            }
+        });
 
         btnConsultaVentas.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnConsultaVentas.setText("CONSULTA DE VENTAS");
@@ -131,11 +136,10 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnVistaProductos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnVistaInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAgregarUsers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnHistorialInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btnVistaProductos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnVistaInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAgregarUsers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnHistorialInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(121, 121, 121)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnVistaVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -291,6 +295,12 @@ public class VistaMenu extends javax.swing.JFrame {
         this.setVisible(false);
         vistaL.setVisible(true);
     }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void btnVistaClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVistaClientesActionPerformed
+        VistaClientes vistaC = new VistaClientes();
+        this.setVisible(false);
+        vistaC.setVisible(true);
+    }//GEN-LAST:event_btnVistaClientesActionPerformed
 
     /**
      * @param args the command line arguments
