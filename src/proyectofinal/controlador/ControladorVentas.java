@@ -165,7 +165,6 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
         if (e.getActionCommand().equals(modelo.getVista().btnAgregarCliente.getActionCommand())) { //Llama a mantenimiento de clientes
             VistaClientes vistaClientes = new VistaClientes();
             vistaClientes.setVisible(true);
-            modelo.getVista().cmbClientes.setModel(impVenta.mostrarCliente());
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnBuscar.getActionCommand())) { //Busca productos
             if (modelo.getVista().txtBuscarProducto.getText().equals("")) {
@@ -182,6 +181,11 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnCancelar.getActionCommand())) { //Cancela busqueda
             modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto());
+            DefaultTableModel model = (DefaultTableModel) modelo.getVista().tblMostrarProductos.getModel();
+            model.addColumn("Seleccionar");
+            TableColumn seleccionarColumn = modelo.getVista().tblMostrarProductos.getColumnModel().getColumn(model.getColumnCount() - 1);
+            seleccionarColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
+            seleccionarColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnGuardar.getActionCommand())) { //Guarda venta y detalle de venta
             int numeroFactura;
@@ -261,6 +265,8 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
                     }
                 }
             }
+        } else if (e.getActionCommand().equals(modelo.getVista().btnRefrescar.getActionCommand())) {
+            modelo.getVista().cmbClientes.setModel(impVenta.mostrarCliente());
         }
     }
 

@@ -71,6 +71,7 @@ public class VistaVentas extends javax.swing.JFrame {
         btnAgregarCliente = new javax.swing.JButton();
         txtUsuario = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        btnRefrescar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -316,6 +317,14 @@ public class VistaVentas extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel8.setText("Usuario:");
 
+        btnRefrescar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
+        btnRefrescar.setText("Refrescar");
+        btnRefrescar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefrescarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -332,7 +341,10 @@ public class VistaVentas extends javax.swing.JFrame {
                         .addGap(43, 43, 43))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnRegresar)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(btnRegresar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnRefrescar))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -369,7 +381,8 @@ public class VistaVentas extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
                     .addComponent(btnRegresar)
-                    .addComponent(btnAgregarCliente))
+                    .addComponent(btnAgregarCliente)
+                    .addComponent(btnRefrescar))
                 .addContainerGap())
         );
 
@@ -430,6 +443,10 @@ public class VistaVentas extends javax.swing.JFrame {
         }        // TODO add your handling code here:
     }//GEN-LAST:event_btnRegresarActionPerformed
 
+    private void btnRefrescarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefrescarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRefrescarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -472,6 +489,7 @@ public class VistaVentas extends javax.swing.JFrame {
         btnGuardar.addActionListener(controlador);
         btnRegresar.addActionListener(controlador);
         btnVaciarLista.addActionListener(controlador);
+        btnRefrescar.addActionListener(controlador);
         tblListaProductos.addMouseListener(controlador);
         tblMostrarProductos.addMouseListener(controlador);
         this.addWindowListener(controlador);
@@ -482,6 +500,7 @@ public class VistaVentas extends javax.swing.JFrame {
     public javax.swing.JButton btnBuscar;
     public javax.swing.JButton btnCancelar;
     public javax.swing.JButton btnGuardar;
+    public javax.swing.JButton btnRefrescar;
     public javax.swing.JButton btnRegresar;
     public javax.swing.JButton btnVaciarLista;
     public javax.swing.JComboBox<String> cmbClientes;
