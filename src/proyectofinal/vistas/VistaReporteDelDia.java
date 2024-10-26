@@ -5,7 +5,9 @@
 package proyectofinal.vistas;
 
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import proyectofinal.modelos.ModeloReportesDia;
+import proyectofinal.modelos.UsuarioActual;
 import proyectofinal.reportes.Reportes;
 
 /**
@@ -21,10 +23,10 @@ public class VistaReporteDelDia extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         this.setTitle("Reportes");
-       ModeloReportesDia modelo = new ModeloReportesDia (this);
-       Reportes reporte = new Reportes (modelo);
-      setReportes (reporte);
-        
+        ModeloReportesDia modelo = new ModeloReportesDia(this);
+        Reportes reporte = new Reportes(modelo);
+        setReportes(reporte);
+
     }
 
     /**
@@ -40,6 +42,7 @@ public class VistaReporteDelDia extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         btnReportePDF = new javax.swing.JButton();
         btnReporteExcel = new javax.swing.JButton();
+        btnRegresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,6 +58,14 @@ public class VistaReporteDelDia extends javax.swing.JFrame {
         btnReporteExcel.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnReporteExcel.setText("Reporte del dia EXCEL");
 
+        btnRegresar.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnRegresar.setText("Regresar");
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -62,17 +73,22 @@ public class VistaReporteDelDia extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(115, 115, 115)
-                        .addComponent(btnReportePDF)
-                        .addGap(141, 141, 141)
-                        .addComponent(btnReporteExcel))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(206, 206, 206)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(104, 104, 104)
+                .addComponent(btnReportePDF)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
+                .addComponent(btnReporteExcel)
+                .addGap(81, 81, 81))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnRegresar)
+                .addGap(308, 308, 308))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -81,15 +97,28 @@ public class VistaReporteDelDia extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(57, 57, 57)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReportePDF)
                     .addComponent(btnReporteExcel))
-                .addGap(139, 139, 139))
+                .addGap(47, 47, 47)
+                .addComponent(btnRegresar)
+                .addGap(85, 85, 85))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        if (UsuarioActual.usuarioActual != null && UsuarioActual.rolActual != null) {
+            // Usamos el rol almacenado en UsuarioActual
+            VistaMenu menu = new VistaMenu(UsuarioActual.rolActual);
+            this.setVisible(false);
+            menu.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: No se ha iniciado sesión.");
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRegresarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -127,6 +156,7 @@ public class VistaReporteDelDia extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton btnRegresar;
     public javax.swing.JButton btnReporteExcel;
     public javax.swing.JButton btnReportePDF;
     private javax.swing.JLabel jLabel1;
@@ -134,10 +164,9 @@ public class VistaReporteDelDia extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void setReportes(Reportes reporte) {
-     btnReportePDF.addActionListener(reporte);
-     btnReporteExcel.addActionListener(reporte);
-    
+        btnReportePDF.addActionListener(reporte);
+        btnReporteExcel.addActionListener(reporte);
+
     }
 
-   
 }

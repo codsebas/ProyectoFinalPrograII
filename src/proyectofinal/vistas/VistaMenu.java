@@ -47,6 +47,9 @@ public class VistaMenu extends javax.swing.JFrame {
         btnVistaVentas = new javax.swing.JButton();
         btnVistaClientes = new javax.swing.JButton();
         btnConsultaVentas = new javax.swing.JButton();
+        btnReportes = new javax.swing.JButton();
+        btnHistorialInventario = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -95,6 +98,31 @@ public class VistaMenu extends javax.swing.JFrame {
             }
         });
 
+        btnReportes.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
+        btnReportes.setText("REPORTES");
+        btnReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportesActionPerformed(evt);
+            }
+        });
+
+        btnHistorialInventario.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
+        btnHistorialInventario.setText("HIRTORIAL DE INVENTARIO");
+        btnHistorialInventario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnHistorialInventario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHistorialInventarioActionPerformed(evt);
+            }
+        });
+
+        btnLogout.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
+        btnLogout.setText("CERRAR SESIÓN");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -102,14 +130,18 @@ public class VistaMenu extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnVistaProductos, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-                    .addComponent(btnVistaInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnAgregarUsers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnVistaProductos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnVistaInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAgregarUsers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnHistorialInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(121, 121, 121)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnVistaVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnVistaClientes, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(btnConsultaVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnConsultaVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReportes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -127,7 +159,13 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregarUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnConsultaVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnHistorialInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Algerian", 0, 48)); // NOI18N
@@ -165,6 +203,8 @@ public class VistaMenu extends javax.swing.JFrame {
         btnVistaInventario.setVisible(false);
         btnVistaProductos.setVisible(false);
         btnVistaVentas.setVisible(false);
+        btnHistorialInventario.setVisible(false);
+        btnReportes.setVisible(false);
 
         switch (rol.toLowerCase()) {
             case "admin":
@@ -173,11 +213,14 @@ public class VistaMenu extends javax.swing.JFrame {
                 btnVistaInventario.setVisible(true);
                 btnVistaProductos.setVisible(true);
                 btnVistaVentas.setVisible(true);
+                btnReportes.setVisible(true);
+                btnHistorialInventario.setVisible(true);
                 break;
 
             case "supervisor":
                 btnVistaInventario.setVisible(true);
                 btnVistaProductos.setVisible(true);
+                btnHistorialInventario.setVisible(true);
                 break;
                 
             case "vendedor":
@@ -229,6 +272,26 @@ public class VistaMenu extends javax.swing.JFrame {
         vistaC.setVisible(true);
     }//GEN-LAST:event_btnConsultaVentasActionPerformed
 
+    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
+        // TODO add your handling code here:
+        VistaReporteDelDia vistaR = new VistaReporteDelDia();
+        this.setVisible(false);
+        vistaR.setVisible(true);
+    }//GEN-LAST:event_btnReportesActionPerformed
+
+    private void btnHistorialInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistorialInventarioActionPerformed
+        // TODO add your handling code here:
+        VistaDetalleInventarios vistaI = new VistaDetalleInventarios();
+        this.setVisible(false);
+        vistaI.setVisible(true);
+    }//GEN-LAST:event_btnHistorialInventarioActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        VistaLogin vistaL = new VistaLogin();
+        this.setVisible(false);
+        vistaL.setVisible(true);
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -267,6 +330,9 @@ public class VistaMenu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarUsers;
     private javax.swing.JButton btnConsultaVentas;
+    private javax.swing.JButton btnHistorialInventario;
+    private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnReportes;
     private javax.swing.JButton btnVistaClientes;
     private javax.swing.JButton btnVistaInventario;
     private javax.swing.JButton btnVistaProductos;

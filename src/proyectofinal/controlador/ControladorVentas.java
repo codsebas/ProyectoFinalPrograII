@@ -97,6 +97,12 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
 
     private void actualizar() {
         this.modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto());
+        DefaultTableModel model = (DefaultTableModel) modelo.getVista().tblMostrarProductos.getModel();
+        model.addColumn("Seleccionar"); // Agregamos la columna de "Seleccionar"
+
+        TableColumn seleccionarColumn = modelo.getVista().tblMostrarProductos.getColumnModel().getColumn(model.getColumnCount() - 1);
+        seleccionarColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
+        seleccionarColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
     }
 
     private void vaciarLista() {
@@ -167,6 +173,12 @@ public class ControladorVentas implements ActionListener, WindowListener, MouseL
             } else {
                 modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto(Integer.parseInt(modelo.getVista().txtBuscarProducto.getText())));
             }
+
+            DefaultTableModel model = (DefaultTableModel) modelo.getVista().tblMostrarProductos.getModel();
+            model.addColumn("Seleccionar");
+            TableColumn seleccionarColumn = modelo.getVista().tblMostrarProductos.getColumnModel().getColumn(model.getColumnCount() - 1);
+            seleccionarColumn.setCellRenderer(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
+            seleccionarColumn.setCellEditor(new ButtonRenderer(modelo.getVista().tblMostrarProductos, modelo.getVista().tblListaProductos, modelo, modelo.getVista().cmbMetodoPago));
 
         } else if (e.getActionCommand().equals(modelo.getVista().btnCancelar.getActionCommand())) { //Cancela busqueda
             modelo.getVista().tblMostrarProductos.setModel(impVenta.modeloProducto());
