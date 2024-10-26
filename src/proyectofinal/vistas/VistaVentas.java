@@ -74,8 +74,12 @@ public class VistaVentas extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        tblListaProductos.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        tblListaProductos.setForeground(new java.awt.Color(153, 102, 255));
         tblListaProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -91,22 +95,31 @@ public class VistaVentas extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jLabel3.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel3.setText("Subtotal");
 
+        jLabel4.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel4.setText("Impuestos");
 
+        jLabel5.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel5.setText("Cargos Adicionales");
 
+        jLabel6.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel6.setText("Total Final");
 
         txtSubtotal.setEditable(false);
+        txtSubtotal.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
 
         txtImpuestos.setEditable(false);
+        txtImpuestos.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
 
         txtCargosAdicionales.setEditable(false);
+        txtCargosAdicionales.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
 
         txtTotalFinal.setEditable(false);
+        txtTotalFinal.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
 
+        btnVaciarLista.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnVaciarLista.setText("Vaciar Lista");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -168,7 +181,7 @@ public class VistaVentas extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -186,10 +199,15 @@ public class VistaVentas extends javax.swing.JFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jLabel7.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel7.setText("Id Producto");
 
+        txtBuscarProducto.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+
+        btnBuscar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnBuscar.setText("Buscar");
 
+        btnCancelar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnCancelar.setText("Cancelar");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -251,14 +269,17 @@ public class VistaVentas extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel4.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
 
+        jLabel1.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel1.setText("Cliente:");
 
+        cmbClientes.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         cmbClientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -266,14 +287,19 @@ public class VistaVentas extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel2.setText("Método de pago");
 
+        cmbMetodoPago.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "efectivo", "tarjeta" }));
 
+        txtNombreCliente.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         txtNombreCliente.setText("Nombre");
 
+        btnGuardar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnGuardar.setText("Guardar Venta");
 
+        btnRegresar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnRegresar.setText("Regresar");
         btnRegresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -281,10 +307,13 @@ public class VistaVentas extends javax.swing.JFrame {
             }
         });
 
+        btnAgregarCliente.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnAgregarCliente.setText("Agregar Cliente");
 
         txtUsuario.setEditable(false);
+        txtUsuario.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
 
+        jLabel8.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel8.setText("Usuario:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);

@@ -57,10 +57,13 @@ public class VistaClientes extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jLabel1.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel1.setText("NIT");
 
+        btnBuscar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnBuscar.setText("Buscar");
 
+        btnCancelar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -83,7 +86,7 @@ public class VistaClientes extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtBuscarNit, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)))
+                        .addComponent(txtBuscarNit, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -102,18 +105,25 @@ public class VistaClientes extends javax.swing.JFrame {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jLabel2.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel2.setText("NIT");
 
+        jLabel3.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel3.setText("Nombre");
 
+        btnGuardar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnGuardar.setText("Guardar");
 
+        btnEliminar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnEliminar.setText("Eliminar");
 
+        btnActualizar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnActualizar.setText("Actualizar");
 
+        btnLimpiar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnLimpiar.setText("Limpiar");
 
+        btnRegresar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnRegresar.setText("Regresar");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);

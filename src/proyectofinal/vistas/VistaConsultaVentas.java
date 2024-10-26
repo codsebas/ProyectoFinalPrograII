@@ -72,10 +72,13 @@ public class VistaConsultaVentas extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        btnBuscar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnBuscar.setText("Buscar");
 
+        btnCancelar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnCancelar.setText("Cancelar");
 
+        btnRegresar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnRegresar.setText("Regresar");
         btnRegresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -83,6 +86,7 @@ public class VistaConsultaVentas extends javax.swing.JFrame {
             }
         });
 
+        btnLimpiar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         btnLimpiar.setText("Limpiar");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -166,20 +170,28 @@ public class VistaConsultaVentas extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tblListaDetalle);
 
+        jLabel1.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel1.setText("Factura");
 
+        jLabel2.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel2.setText("Usuario");
 
+        jLabel3.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel3.setText("Nit cliente");
 
+        jLabel4.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel4.setText("Fecha de Venta");
 
+        jLabel5.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel5.setText("Subtotal");
 
+        jLabel6.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel6.setText("Impuestos");
 
+        jLabel7.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel7.setText("Cargos Adicionales");
 
+        jLabel8.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel8.setText("Método de pago");
 
         txtFactura.setEditable(false);
@@ -198,6 +210,7 @@ public class VistaConsultaVentas extends javax.swing.JFrame {
 
         txtMetodoPago.setEditable(false);
 
+        jLabel9.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jLabel9.setText("Total de Venta");
 
         txtTotalVenta.setEditable(false);
@@ -217,7 +230,7 @@ public class VistaConsultaVentas extends javax.swing.JFrame {
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtCargosAdicionales, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
+                                .addComponent(txtCargosAdicionales, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4)
