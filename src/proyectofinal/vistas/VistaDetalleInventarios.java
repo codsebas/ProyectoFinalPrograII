@@ -7,8 +7,10 @@ package proyectofinal.vistas;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowListener;
+import javax.swing.JOptionPane;
 import proyectofinal.controlador.ControladorDetalleInventario;
 import proyectofinal.modelos.ModeloDetalleInventario;
+import proyectofinal.modelos.UsuarioActual;
 
 /**
  *
@@ -41,7 +43,7 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        btnVisualizar = new javax.swing.JButton();
+        btnRegresar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblDetallesInventarios = new javax.swing.JTable();
         txtBuscarDetalle = new javax.swing.JTextField();
@@ -61,6 +63,7 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         txtMotivoModificacion = new javax.swing.JTextField();
+        btnVisualizar = new javax.swing.JButton();
 
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -81,11 +84,11 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Detalle Inventarios");
 
-        btnVisualizar.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-        btnVisualizar.setText("Visualizar");
-        btnVisualizar.addActionListener(new java.awt.event.ActionListener() {
+        btnRegresar.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnRegresar.setText("Regresar");
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVisualizarActionPerformed(evt);
+                btnRegresarActionPerformed(evt);
             }
         });
 
@@ -199,6 +202,14 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        btnVisualizar.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnVisualizar.setText("Visualizar");
+        btnVisualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVisualizarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -221,6 +232,8 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnRegresar)
+                        .addGap(18, 18, 18)
                         .addComponent(btnVisualizar)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -238,7 +251,9 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnVisualizar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnVisualizar)
+                    .addComponent(btnRegresar))
                 .addGap(35, 35, 35))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
@@ -248,6 +263,18 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        if (UsuarioActual.usuarioActual != null && UsuarioActual.rolActual != null) {
+            // Usamos el rol almacenado en UsuarioActual
+            VistaMenu menu = new VistaMenu(UsuarioActual.rolActual);
+            this.setVisible(false);
+            menu.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: No se ha iniciado sesión.");
+        }        // TODO add your handling code here:
+
+    }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnVisualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVisualizarActionPerformed
         // TODO add your handling code here:
@@ -289,6 +316,7 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton btnRegresar;
     public javax.swing.JButton btnVisualizar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -316,7 +344,7 @@ public class VistaDetalleInventarios extends javax.swing.JFrame {
 
     private void setControladorDetalleInventario(ControladorDetalleInventario controlador) {
         tblDetallesInventarios.addMouseListener(controlador);
-        btnVisualizar.addActionListener(controlador);
+        btnRegresar.addActionListener(controlador);
         this.addWindowListener(controlador);
     }
 }

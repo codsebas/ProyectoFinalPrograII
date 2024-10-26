@@ -19,16 +19,14 @@ public class VistaLogin extends javax.swing.JFrame {
     /**
      * Creates new form VistaLogin
      */
-    
     private ControladorUsuario controladorUsuario;
+
     public VistaLogin() {
         initComponents();
         setTitle("Login");
-         setLocationRelativeTo(null);
-         controladorUsuario = new ControladorUsuario();
+        setLocationRelativeTo(null);
+        controladorUsuario = new ControladorUsuario();
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,9 +40,9 @@ public class VistaLogin extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JTextField();
         txtUsuario = new javax.swing.JTextField();
         btnIniciarSesion = new javax.swing.JButton();
+        txtPassword = new javax.swing.JPasswordField();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -57,13 +55,6 @@ public class VistaLogin extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         jLabel2.setText("Usuario:");
-
-        txtPassword.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        txtPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPasswordActionPerformed(evt);
-            }
-        });
 
         txtUsuario.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtUsuario.addActionListener(new java.awt.event.ActionListener() {
@@ -87,17 +78,17 @@ public class VistaLogin extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(95, 95, 95)
+                        .addComponent(btnIniciarSesion))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(51, 51, 51)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
                         .addGap(36, 36, 36)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(95, 95, 95)
-                        .addComponent(btnIniciarSesion)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                            .addComponent(txtPassword))))
                 .addContainerGap(37, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -107,8 +98,8 @@ public class VistaLogin extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(35, 35, 35)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(32, 32, 32)
@@ -156,7 +147,7 @@ public class VistaLogin extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
@@ -166,44 +157,35 @@ public class VistaLogin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsuarioActionPerformed
 
-    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPasswordActionPerformed
-
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
-      
-        
-       String usuario = txtUsuario.getText();
-    String password = txtPassword.getText();
-    
 
-    if (usuario.isEmpty() || password.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Complete ambos campos");
-        return;
-    }
-    
-    // Validar usuario y obtener su modelo
-    ModeloUsuario user = controladorUsuario.validarUsuario(usuario, password);
-    
-    if (user != null) {
-        
-        
-    UsuarioActual.usuarioActual = user.getUsuario();
-    UsuarioActual.rolActual = user.getRol();
-        
-    
-   
-    System.out.println("Rol del usuario: " + UsuarioActual.rolActual);
-    
-   
-     VistaMenu vistaMenu = new VistaMenu(UsuarioActual.rolActual); // Usamos directamente el rol del usuario
-        vistaMenu.setVisible(true);
-        this.setVisible(false);  // Ocultar la ventana de login
+        String usuario = txtUsuario.getText();
+        char[] passwordArray = txtPassword.getPassword();
+        String password = new String(passwordArray);
 
-    } else {
-        JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
-    }
-       
+        if (usuario.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Complete ambos campos");
+            return;
+        }
+
+        // Validar usuario y obtener su modelo
+        ModeloUsuario user = controladorUsuario.validarUsuario(usuario, password);
+
+        if (user != null) {
+
+            UsuarioActual.usuarioActual = user.getUsuario();
+            UsuarioActual.rolActual = user.getRol();
+
+            System.out.println("Rol del usuario: " + UsuarioActual.rolActual);
+
+            VistaMenu vistaMenu = new VistaMenu(UsuarioActual.rolActual); // Usamos directamente el rol del usuario
+            vistaMenu.setVisible(true);
+            this.setVisible(false);  // Ocultar la ventana de login
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
+        }
+
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     /**
@@ -248,7 +230,7 @@ public class VistaLogin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }
