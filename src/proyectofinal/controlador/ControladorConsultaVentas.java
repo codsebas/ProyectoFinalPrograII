@@ -29,16 +29,16 @@ public class ControladorConsultaVentas implements ActionListener, MouseListener,
     }
 
     private void limpiar() {
-        modelo.getVista().txtBuscar.setText(""); // Factura
-        modelo.getVista().txtFactura.setText(""); // Factura
-        modelo.getVista().txtUsuario.setText(""); // Usuario
-        modelo.getVista().txtNitCliente.setText(""); // Cliente NIT
-        modelo.getVista().txtFechaVenta.setText(""); // Fecha Venta
-        modelo.getVista().txtSubtotall.setText(""); // Total Sin Impuestos
-        modelo.getVista().txtImpuestos.setText(""); // Total Con Impuestos
-        modelo.getVista().txtCargosAdicionales.setText(""); // Cargo Tarjeta
-        modelo.getVista().txtTotalVenta.setText(""); // Total Venta
-        modelo.getVista().txtMetodoPago.setText(""); // Método de Pa
+        modelo.getVista().txtBuscar.setText("");
+        modelo.getVista().txtFactura.setText("");
+        modelo.getVista().txtUsuario.setText("");
+        modelo.getVista().txtNitCliente.setText("");
+        modelo.getVista().txtFechaVenta.setText("");
+        modelo.getVista().txtSubtotall.setText("");
+        modelo.getVista().txtImpuestos.setText("");
+        modelo.getVista().txtCargosAdicionales.setText("");
+        modelo.getVista().txtTotalVenta.setText("");
+        modelo.getVista().txtMetodoPago.setText("");
         DefaultTableModel detalleModel = (DefaultTableModel) modelo.getVista().tblListaDetalle.getModel();
         detalleModel.setRowCount(0);
     }
@@ -63,32 +63,32 @@ public class ControladorConsultaVentas implements ActionListener, MouseListener,
 
     private void mostrarVentas() {
         ModeloConsultaVenta modeloConsulta = implementacion.mostrarConsultaVenta(Integer.parseInt(modelo.getVista().txtBuscar.getText()));
-        modelo.getVista().txtBuscar.setText(String.valueOf(modeloConsulta.getNoFactura())); // Factura
-        modelo.getVista().txtFactura.setText(String.valueOf(modeloConsulta.getNoFactura())); // Factura
-        modelo.getVista().txtUsuario.setText(modeloConsulta.getUser()); // Usuario
-        modelo.getVista().txtNitCliente.setText(modeloConsulta.getNit()); // Cliente NIT
-        modelo.getVista().txtFechaVenta.setText(modeloConsulta.getFechaVenta()); // Fecha Venta
-        modelo.getVista().txtSubtotall.setText(String.valueOf(modeloConsulta.getSubtotal())); // Total Sin Impuestos
-        modelo.getVista().txtImpuestos.setText(String.valueOf(modeloConsulta.getImpuestos())); // Total Con Impuestos
-        modelo.getVista().txtCargosAdicionales.setText(String.valueOf(modeloConsulta.getCargoTarjeta())); // Cargo Tarjeta
-        modelo.getVista().txtTotalVenta.setText(String.valueOf(modeloConsulta.getTotalVenta())); // Total Venta
-        modelo.getVista().txtMetodoPago.setText(modeloConsulta.getMetodoPago()); // Método de Pago
+        modelo.getVista().txtBuscar.setText(String.valueOf(modeloConsulta.getNoFactura()));
+        modelo.getVista().txtFactura.setText(String.valueOf(modeloConsulta.getNoFactura()));
+        modelo.getVista().txtUsuario.setText(modeloConsulta.getUser());
+        modelo.getVista().txtNitCliente.setText(modeloConsulta.getNit());
+        modelo.getVista().txtFechaVenta.setText(modeloConsulta.getFechaVenta());
+        modelo.getVista().txtSubtotall.setText(String.valueOf(modeloConsulta.getSubtotal()));
+        modelo.getVista().txtImpuestos.setText(String.valueOf(modeloConsulta.getImpuestos()));
+        modelo.getVista().txtCargosAdicionales.setText(String.valueOf(modeloConsulta.getCargoTarjeta()));
+        modelo.getVista().txtTotalVenta.setText(String.valueOf(modeloConsulta.getTotalVenta()));
+        modelo.getVista().txtMetodoPago.setText(modeloConsulta.getMetodoPago());
         modelo.getVista().tblListaDetalle.setModel(impDet.modeloDetalleVenta(Integer.parseInt(modelo.getVista().txtFactura.getText())));
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getComponent().equals(modelo.getVista().tblListaVentas)) {
-            modelo.getVista().txtBuscar.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 0))); // Factura
-            modelo.getVista().txtFactura.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 0))); // Factura
-            modelo.getVista().txtUsuario.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 1))); // Usuario
-            modelo.getVista().txtNitCliente.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 2))); // Cliente NIT
-            modelo.getVista().txtFechaVenta.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 3))); // Fecha Venta
-            modelo.getVista().txtSubtotall.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 4))); // Total Sin Impuestos
-            modelo.getVista().txtImpuestos.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 5))); // Total Con Impuestos
-            modelo.getVista().txtCargosAdicionales.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 6))); // Cargo Tarjeta
-            modelo.getVista().txtTotalVenta.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 7))); // Total Venta
-            modelo.getVista().txtMetodoPago.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 8))); // Método de Pago
+            modelo.getVista().txtBuscar.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 0)));
+            modelo.getVista().txtFactura.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 0)));
+            modelo.getVista().txtUsuario.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 1)));
+            modelo.getVista().txtNitCliente.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 2)));
+            modelo.getVista().txtFechaVenta.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 3)));
+            modelo.getVista().txtSubtotall.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 4)));
+            modelo.getVista().txtImpuestos.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 5)));
+            modelo.getVista().txtCargosAdicionales.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 6)));
+            modelo.getVista().txtTotalVenta.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 7)));
+            modelo.getVista().txtMetodoPago.setText(String.valueOf(modelo.getVista().tblListaVentas.getValueAt(modelo.getVista().tblListaVentas.getSelectedRow(), 8)));
             modelo.getVista().tblListaDetalle.setModel(impDet.modeloDetalleVenta(Integer.parseInt(modelo.getVista().txtFactura.getText())));
         }
     }
@@ -139,5 +139,4 @@ public class ControladorConsultaVentas implements ActionListener, MouseListener,
     @Override
     public void windowDeactivated(WindowEvent e) {
     }
-
 }

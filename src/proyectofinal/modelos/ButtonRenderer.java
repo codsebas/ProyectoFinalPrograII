@@ -23,12 +23,11 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
     private ModeloVenta modelo;
     private JComboBox<String> cmbMetodoPago;
 
-    // Constructor que acepta el modelo ya existente
     public ButtonRenderer(JTable tableProductos, JTable tableDetalle, ModeloVenta modelo, JComboBox<String> comboBoxMetodoPago) {
         this.tableProductos = tableProductos;
         this.tableDetalle = tableDetalle;
-        this.modelo = modelo; // Asigna el modelo pasado como argumento
-        this.cmbMetodoPago = comboBoxMetodoPago; // Inicializa el JComboBox
+        this.modelo = modelo; 
+        this.cmbMetodoPago = comboBoxMetodoPago; 
         renderButton = new JButton();
         editButton = new JButton();
         editButton.setFocusPainted(false);
@@ -58,32 +57,31 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
         JTable table = (JTable) SwingUtilities.getAncestorOfClass(JTable.class, (Component) e.getSource());
 
         if (table.equals(tableProductos)) {
-            // Botón "Seleccionar" de la tabla de productos
             int cantidad = pedirCantidad();
             if (cantidad > 0) {
                 int stockActual = Integer.parseInt(tableProductos.getValueAt(selectedRow, 3).toString()); // Columna 3: Stock actual
                 if (cantidad > stockActual) {
                     JOptionPane.showMessageDialog(null, "No hay suficiente stock disponible.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return; // Detenemos si la cantidad supera el stock
+                    return; 
                 }
-                agregarProductoADetalle(selectedRow, cantidad); // Agregar producto a la tabla de detalle
-                // Actualizar el stock en la tabla de productos
+                agregarProductoADetalle(selectedRow, cantidad); 
+                
                 int nuevoStock = stockActual - cantidad;
-                tableProductos.setValueAt(nuevoStock, selectedRow, 3); // Actualizar el stock en la columna 3
+                tableProductos.setValueAt(nuevoStock, selectedRow, 3); 
                 recalcularTotales();
             }
         } else if (table.equals(tableDetalle)) {
             if (selectedRow != -1) {
-                String idProducto = tableDetalle.getValueAt(selectedRow, 0).toString(); // Asumiendo que el ID está en la columna 0
-                int cantidadEliminar = Integer.parseInt(tableDetalle.getValueAt(selectedRow, 2).toString()); // Cantidad a eliminar (columna 2)
+                String idProducto = tableDetalle.getValueAt(selectedRow, 0).toString(); 
+                int cantidadEliminar = Integer.parseInt(tableDetalle.getValueAt(selectedRow, 2).toString()); 
 
                 for (int i = 0; i < tableProductos.getRowCount(); i++) {
                     if (tableProductos.getValueAt(i, 0).toString().equals(idProducto)) {
-                        // Recuperar el stock actual en la tabla de productos
-                        int stockActual = Integer.parseInt(tableProductos.getValueAt(i, 3).toString()); // Columna 3: Stock
-                        int nuevoStock = stockActual + cantidadEliminar; // Sumar la cantidad eliminada al stock
-                        tableProductos.setValueAt(nuevoStock, i, 3); // Actualizar el stock en la tabla de productos
-                        break; // Producto encontrado, romper el bucle
+                        
+                        int stockActual = Integer.parseInt(tableProductos.getValueAt(i, 3).toString()); 
+                        int nuevoStock = stockActual + cantidadEliminar; 
+                        tableProductos.setValueAt(nuevoStock, i, 3); 
+                        break; 
                     }
                 }
 
@@ -95,7 +93,7 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
         fireEditingStopped();
     }
 
-    // Método para pedir cantidad con JOptionPane
+    
     private int pedirCantidad() {
         String cantidadStr = JOptionPane.showInputDialog(null, "Ingrese la cantidad:", "Cantidad", JOptionPane.QUESTION_MESSAGE);
         if (cantidadStr != null && !cantidadStr.isEmpty()) {
@@ -110,12 +108,12 @@ public class ButtonRenderer extends AbstractCellEditor implements TableCellRende
 
     private void agregarProductoADetalle(int selectedRow, int cantidad) {
         DefaultTableModel detalleModel = (DefaultTableModel) tableDetalle.getModel();
-        String idProducto = tableProductos.getValueAt(selectedRow, 0).toString(); // Columna 0: ID del producto
-        String nombreProducto = tableProductos.getValueAt(selectedRow, 1).toString(); // Columna 1: Nombre del producto
-        double precioUnitario = Double.parseDouble(tableProductos.getValueAt(selectedRow, 2).toString()); // Columna 2: Precio unitario
+        String idProducto = tableProductos.getValueAt(selectedRow, 0).toString(); 
+        String nombreProducto = tableProductos.getValueAt(selectedRow, 1).toString(); 
+        double precioUnitario = Double.parseDouble(tableProductos.getValueAt(selectedRow, 2).toString()); 
         double totalLinea = precioUnitario * cantidad;
 
-        detalleModel.addRow(new Object[]{idProducto, nombreProducto, cantidad, precioUnitario, totalLinea, "Eliminar"}); // Agregar fila
+        detalleModel.addRow(new Object[]{idProducto, nombreProducto, cantidad, precioUnitario, totalLinea, "Eliminar"}); 
     }
 
     private void recalcularTotales() {
